@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealFocus.AzureExtensions", "StealFocus.AzureExtensions\StealFocus.AzureExtensions.csproj", "{78443EA4-B5BC-4854-B4CB-294AEA3ECE0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3822506B-7467-4192-8370-20E159583437}"
+	ProjectSection(SolutionItems) = preProject
+		FxCopCustomDictionary.xml = FxCopCustomDictionary.xml
+		Local.testsettings = Local.testsettings
+		Notes.txt = Notes.txt
+		Settings.StyleCop = Settings.StyleCop
+		StealFocus.AzureExtensions.ruleset = StealFocus.AzureExtensions.ruleset
+		StealFocus.AzureExtensions.vsmdi = StealFocus.AzureExtensions.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealFocus.AzureExtensions.Tests", "StealFocus.AzureExtensions.Tests\StealFocus.AzureExtensions.Tests.csproj", "{35EC232D-84BB-4286-86E7-1A447A0C4A36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A74FB3B2-C657-4683-BA43-B177FE10090E}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = StealFocus.AzureExtensions.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78443EA4-B5BC-4854-B4CB-294AEA3ECE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78443EA4-B5BC-4854-B4CB-294AEA3ECE0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78443EA4-B5BC-4854-B4CB-294AEA3ECE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78443EA4-B5BC-4854-B4CB-294AEA3ECE0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35EC232D-84BB-4286-86E7-1A447A0C4A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35EC232D-84BB-4286-86E7-1A447A0C4A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35EC232D-84BB-4286-86E7-1A447A0C4A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35EC232D-84BB-4286-86E7-1A447A0C4A36}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35EC232D-84BB-4286-86E7-1A447A0C4A36} = {A74FB3B2-C657-4683-BA43-B177FE10090E}
+	EndGlobalSection
+EndGlobal

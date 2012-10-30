@@ -1,0 +1,17 @@
+Public key is
+00240000048000009400000006020000002400005253413100040000010001005b9e6ed06201024a6051c84c5cb65d86078e07e7aee8ec8334227ec45edcab291be648db1e2178f39008e6d0ce18a35a3cb0c42fd6639386de4e42f486b5507830bafa347f1d6452a1718fb5e3e71686d8d511a03ea1c04fe5b76b910a47ab9ee95d05657e616428cace679d495a08787db12091151f0f4349fff32a1d5909d7
+
+Public key token is
+7ce888c75194ec0e
+
+To Do:
+ - Fold XML logic into objects and not hard coded strings.
+ - Push formatting of "filter" parameters into objects.
+ - Deal with custom domains for accounts.
+ - Examples of "filters" in XML comments.
+ - Add in log4net for diagnostics.
+ - Note that Azure is throttled, perhaps causes issues when running tests.
+ - Some sort of pluggable policy for handling different HTTP error codes e.g. 502 Bad Gateway (would be the proxy).
+
+Done
+ - Argument validation.
