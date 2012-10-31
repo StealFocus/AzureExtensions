@@ -25,5 +25,9 @@ namespace StealFocus.AzureExtensions.Rest
         SortedList<string, string> GetContainerProperties(string container);
 
         SortedList<string, string> GetContainerMetadata(string container);
+
+        bool SetContainerMetadata(string container, SortedList<string, string> metadataList);
+
+        string GetContainerAcl(string container);
     }
 }

@@ -96,15 +96,55 @@
         }
 
         [TestMethod]
-        public void IntegrationTestGetContainerMetadata()
+        public void IntegrationTestGetAndSetContainerMetadata()
         {
             IBlobStorage blobStorage = new BlobStorage(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
             bool createSucess = blobStorage.CreateContainer("test3");
             Assert.IsTrue(createSucess, "The container was not created as expected.");
-            SortedList<string, string> containerMetadata = blobStorage.GetContainerMetadata("test3");
-            Assert.IsNotNull(containerMetadata, "The metadata were null when they were not expected to be.");
-            Assert.IsTrue(containerMetadata.Count > 6, "The number of container properties was not as expected.");
+
+            // Get container metadata and check there is no metadata
+            SortedList<string, string> containerMetadata1 = blobStorage.GetContainerMetadata("test3");
+            Assert.IsNotNull(containerMetadata1, "The metadata were null when they were not expected to be.");
+            Assert.AreEqual(0, containerMetadata1.Count, "The number of metadata items for the container was not as expected.");
+            
+            // Set some metadata
+            SortedList<string, string> containerMetadata2 = new SortedList<string, string>();
+            containerMetadata2.Add("x-ms-meta-meta1", "value1"); // Add one with the correct prefix ("x-ms-meta-").
+            containerMetadata2.Add("meta2", "value2"); // Add one without the prefix.
+            bool setMetadataSuccess = blobStorage.SetContainerMetadata("test3", containerMetadata2);
+            Assert.IsTrue(setMetadataSuccess, "The container metadata was not set as expected.");
+
+            // Get container metadata again and check there is some metadata this time.
+            SortedList<string, string> containerMetadata3 = blobStorage.GetContainerMetadata("test3");
+            Assert.IsNotNull(containerMetadata3, "The metadata were null when they were not expected to be.");
+            Assert.AreEqual(2, containerMetadata3.Count, "The number of metadata items for the container was not as expected.");
+            Assert.IsTrue(containerMetadata3.ContainsKey("x-ms-meta-meta1"), "The key was not present in the metadata when it was expected to be so.");
+            Assert.AreEqual("value1", containerMetadata3["x-ms-meta-meta1"], "The value in the metadata was not as expected.");
+            Assert.IsTrue(containerMetadata3.ContainsKey("x-ms-meta-meta2"), "The key was not present in the metadata when it was expected to be so.");
+            Assert.AreEqual("value2", containerMetadata3["x-ms-meta-meta2"], "The value in the metadata was not as expected.");
+
+            // Now delete the container.
             bool deleteSuccess = blobStorage.DeleteContainer("test3");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
+        [TestMethod]
+        public void IntegrationTestGetContainerAcl()
+        {
+            IBlobStorage blobStorage = new BlobStorage(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobStorage.CreateContainer("test4");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Get the ACL.
+            string containerAcl = blobStorage.GetContainerAcl("test4");
+            Assert.AreEqual("private", containerAcl, "The returned ACL was not as expected.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobStorage.DeleteContainer("test4");
             Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
         }
 

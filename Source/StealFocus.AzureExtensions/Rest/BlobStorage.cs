@@ -261,7 +261,10 @@
                         SortedList<string, string> properties = new SortedList<string, string>();
                         for (int i = 0; i < httpWebResponse.Headers.Count; i++)
                         {
-                            properties.Add(httpWebResponse.Headers.Keys[i], httpWebResponse.Headers[i]);
+                            if (httpWebResponse.Headers.Keys[i].StartsWith("x-ms-meta-", StringComparison.OrdinalIgnoreCase))
+                            {
+                                properties.Add(httpWebResponse.Headers.Keys[i], httpWebResponse.Headers[i]);
+                            }
                         }
 
                         return properties;
@@ -269,6 +272,97 @@
                 }
 
                 return metadataList;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                throw;
+            }
+        }
+
+        public bool SetContainerMetadata(string container, SortedList<string, string> metadataList)
+        {
+            try
+            {
+                SortedList<string, string> headers = new SortedList<string, string>();
+                if (metadataList != null)
+                {
+                    foreach (KeyValuePair<string, string> value in metadataList)
+                    {
+                        if (value.Key.StartsWith("x-ms-meta-", StringComparison.OrdinalIgnoreCase))
+                        {
+                            headers.Add(value.Key.ToLowerInvariant(), value.Value);
+                        }
+                        else
+                        {
+                            headers.Add("x-ms-meta-" + value.Key.ToLowerInvariant(), value.Value);
+                        }
+                    }
+                }
+
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", container + "?restype=container&comp=metadata", string.Empty, headers);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        public string GetContainerAcl(string container)
+        {
+            string accessLevel = string.Empty;
+            try
+            {
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", container + "?restype=container&comp=acl");
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    if (httpWebResponse.Headers != null)
+                    {
+                        string access = httpWebResponse.Headers["x-ms-blob-public-access"];
+                        if (access != null)
+                        {
+                            switch (access)
+                            {
+                                case "container":
+                                case "blob":
+                                    accessLevel = access;
+                                    break;
+                                case "true":
+                                    accessLevel = "container";
+                                    break;
+                                default:
+                                    accessLevel = "private";
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            accessLevel = "private";
+                        }
+                    }
+                }
+
+                return accessLevel;
             }
             catch (WebException ex)
             {
