@@ -11,6 +11,8 @@
     using System.Threading;
     using System.Web;
 
+    using StealFocus.AzureExtensions.Rest.Configuration;
+
     internal class StorageApiRequest : IStorageApiRequest
     {
         internal const int DefaultAttemptIntervalInMilliseconds = 200;
@@ -46,7 +48,7 @@
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = method;
             request.ContentLength = 0;
-            request.Headers.Add("x-ms-date", now.ToString("R", CultureInfo.InvariantCulture));
+            request.Headers.Add("x-ms-date", now.ToString(DateFormat.Rfc1123Pattern, CultureInfo.InvariantCulture));
             request.Headers.Add("x-ms-version", "2009-09-19");
             if (this.storageEndpoint.IsTableStorage)
             {
@@ -125,7 +127,7 @@
                     "{0}\n\n{1}\n{2}\n{3}",
                     method,
                     "application/atom+xml",
-                    now.ToString("R", CultureInfo.InvariantCulture),
+                    now.ToString(DateFormat.Rfc1123Pattern, CultureInfo.InvariantCulture),
                     GetCanonicalizedResource(request.RequestUri, storageAccountName, true));
             }
             else
