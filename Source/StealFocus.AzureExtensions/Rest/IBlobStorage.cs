@@ -10,26 +10,26 @@ namespace StealFocus.AzureExtensions.Rest
 
         BlobContainer[] ListContainers(int numberOfAttempts, int timeBetweenAttemptsInMilliseconds);
 
-        bool CreateContainer(string container);
+        bool CreateContainer(string containerName);
 
-        bool CreateContainer(string container, int numberOfAttempts);
+        bool CreateContainer(string containerName, int numberOfAttempts);
 
-        bool CreateContainer(string container, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds);
+        bool CreateContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds);
 
-        bool DeleteContainer(string container);
+        bool DeleteContainer(string containerName);
 
-        bool DeleteContainer(string container, int numberOfAttempts);
+        bool DeleteContainer(string containerName, int numberOfAttempts);
 
-        bool DeleteContainer(string container, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds);
+        bool DeleteContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds);
 
-        SortedList<string, string> GetContainerProperties(string container);
+        SortedList<string, string> GetContainerProperties(string containerName);
 
-        SortedList<string, string> GetContainerMetadata(string container);
+        SortedList<string, string> GetContainerMetadata(string containerName);
 
-        bool SetContainerMetadata(string container, SortedList<string, string> metadataList);
+        bool SetContainerMetadata(string containerName, SortedList<string, string> metadataList);
 
-        string GetContainerAcl(string container);
+        ContainerAcl GetContainerAcl(string containerName);
 
-        bool SetContainerAcl(string container, string containerAccessLevel);
+        bool SetContainerAcl(string containerName, ContainerAcl containerAcl);
     }
 }

@@ -143,11 +143,16 @@
             return StorageApiRequest.Attempt(this.ListContainers, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
-        public bool CreateContainer(string container)
+        public bool CreateContainer(string containerName)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", container + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -166,21 +171,26 @@
             }
         }
 
-        public bool CreateContainer(string container, int numberOfAttempts)
+        public bool CreateContainer(string containerName, int numberOfAttempts)
         {
-            return this.CreateContainer(container, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.CreateContainer(containerName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
-        public bool CreateContainer(string container, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
+        public bool CreateContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.CreateContainer(container), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageApiRequest.Attempt(() => this.CreateContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
-        public bool DeleteContainer(string container)
+        public bool DeleteContainer(string containerName)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", container + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -199,21 +209,26 @@
             }
         }
 
-        public bool DeleteContainer(string container, int numberOfAttempts)
+        public bool DeleteContainer(string containerName, int numberOfAttempts)
         {
-            return this.DeleteContainer(container, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteContainer(containerName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
-        public bool DeleteContainer(string container, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
+        public bool DeleteContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteContainer(container), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageApiRequest.Attempt(() => this.DeleteContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
-        public SortedList<string, string> GetContainerProperties(string container)
+        public SortedList<string, string> GetContainerProperties(string containerName)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", container + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
@@ -246,12 +261,17 @@
             }
         }
 
-        public SortedList<string, string> GetContainerMetadata(string container)
+        public SortedList<string, string> GetContainerMetadata(string containerName)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             SortedList<string, string> metadataList = new SortedList<string, string>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", container + "?restype=container&comp=metadata", string.Empty, metadataList);
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", containerName + "?restype=container&comp=metadata", string.Empty, metadataList);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
@@ -287,8 +307,13 @@
             }
         }
 
-        public bool SetContainerMetadata(string container, SortedList<string, string> metadataList)
+        public bool SetContainerMetadata(string containerName, SortedList<string, string> metadataList)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             try
             {
                 SortedList<string, string> headers = new SortedList<string, string>();
@@ -307,7 +332,7 @@
                     }
                 }
 
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", container + "?restype=container&comp=metadata", string.Empty, headers);
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container&comp=metadata", string.Empty, headers);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -326,14 +351,19 @@
             }
         }
 
-        public string GetContainerAcl(string container)
+        public ContainerAcl GetContainerAcl(string containerName)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
             string containerAccessLevel = null;
+            string signedIdentifiersXml = null;
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", container + "?restype=container&comp=acl");
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", containerName + "?restype=container&comp=acl");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                httpWebResponse.Close();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
                     if (httpWebResponse.Headers != null)
@@ -363,9 +393,32 @@
                             containerAccessLevel = "private";
                         }
                     }
-                }
 
-                return containerAccessLevel;
+                    Stream responseStream = httpWebResponse.GetResponseStream();
+                    if (responseStream == null)
+                    {
+                        throw new AzureExtensionsException("The response did not provide a stream as expected.");
+                    }
+
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        // <?xml version="1.0" encoding="utf-8"?>
+                        // <SignedIdentifiers>
+                        //   <SignedIdentifier> 
+                        //     <Id>MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=</Id>
+                        //     <AccessPolicy>
+                        //      <Start>2009-09-28T08:49:37.0000000Z</Start>
+                        //       <Expiry>2009-09-29T08:49:37.0000000Z</Expiry>
+                        //       <Permission>rwd</Permission>
+                        //     </AccessPolicy>
+                        //   </SignedIdentifier>
+                        // </SignedIdentifiers>
+                        signedIdentifiersXml = reader.ReadToEnd();
+                    }
+                }
+                
+                httpWebResponse.Close();
+                return new ContainerAcl(containerAccessLevel, signedIdentifiersXml);
             }
             catch (WebException ex)
             {
@@ -381,20 +434,30 @@
             }
         }
 
-        public bool SetContainerAcl(string container, string containerAccessLevel)
+        public bool SetContainerAcl(string containerName, ContainerAcl containerAcl)
         {
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentException("The Container Name may not be null or empty.", "containerName");
+            }
+
+            if (containerAcl == null)
+            {
+                throw new ArgumentNullException("containerAcl");
+            }
+
             try
             {
                 SortedList<string, string> headers = new SortedList<string, string>();
-                switch (containerAccessLevel)
+                switch (containerAcl.AccessLevel)
                 {
                     case "container":
                     case "blob":
-                        headers.Add("x-ms-blob-public-access", containerAccessLevel.ToLowerInvariant());
+                        headers.Add("x-ms-blob-public-access", containerAcl.AccessLevel.ToLowerInvariant());
                         break;
                 }
 
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", container + "?restype=container&comp=acl", string.Empty, headers);
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container&comp=acl", containerAcl.SignedIdentifiersXml, headers);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;

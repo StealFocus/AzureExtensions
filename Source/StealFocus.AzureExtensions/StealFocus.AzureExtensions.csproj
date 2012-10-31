@@ -55,6 +55,7 @@
     <Compile Include="AzureExtensionsException.cs" />
     <Compile Include="BlobContainer.cs" />
     <Compile Include="Configuration\DevelopmentStorage.cs" />
+    <Compile Include="ContainerAcl.cs" />
     <Compile Include="Queue.cs" />
     <Compile Include="QueueMessagesList.cs" />
     <Compile Include="QueueStorageEndpoint.cs" />
