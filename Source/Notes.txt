@@ -20,6 +20,7 @@ To Do:
  - Add in log4net for diagnostics.
  - Note that Azure is throttled, perhaps causes issues when running tests.
  - Some sort of pluggable policy for handling different HTTP error codes e.g. 502 Bad Gateway (would be the proxy).
+ - Some way of automatically throtting the requests to Azure to prevent errors.
 
 Done
  - Argument validation.
