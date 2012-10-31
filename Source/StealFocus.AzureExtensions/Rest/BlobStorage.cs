@@ -328,7 +328,7 @@
 
         public string GetContainerAcl(string container)
         {
-            string accessLevel = string.Empty;
+            string containerAccessLevel = null;
             try
             {
                 HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", container + "?restype=container&comp=acl");
@@ -344,25 +344,28 @@
                             switch (access)
                             {
                                 case "container":
+                                    containerAccessLevel = "container";
+                                    break;
                                 case "blob":
-                                    accessLevel = access;
+                                    containerAccessLevel = "blob";
                                     break;
                                 case "true":
-                                    accessLevel = "container";
+                                    // Case for legacy compatibility.
+                                    containerAccessLevel = "container";
                                     break;
                                 default:
-                                    accessLevel = "private";
+                                    containerAccessLevel = access;
                                     break;
                             }
                         }
                         else
                         {
-                            accessLevel = "private";
+                            containerAccessLevel = "private";
                         }
                     }
                 }
 
-                return accessLevel;
+                return containerAccessLevel;
             }
             catch (WebException ex)
             {
@@ -372,6 +375,38 @@
                     httpWebResponse.StatusCode == HttpStatusCode.NotFound)
                 {
                     return null;
+                }
+
+                throw;
+            }
+        }
+
+        public bool SetContainerAcl(string container, string containerAccessLevel)
+        {
+            try
+            {
+                SortedList<string, string> headers = new SortedList<string, string>();
+                switch (containerAccessLevel)
+                {
+                    case "container":
+                    case "blob":
+                        headers.Add("x-ms-blob-public-access", containerAccessLevel.ToLowerInvariant());
+                        break;
+                }
+
+                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", container + "?restype=container&comp=acl", string.Empty, headers);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
                 }
 
                 throw;

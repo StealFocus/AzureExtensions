@@ -131,7 +131,7 @@
         }
 
         [TestMethod]
-        public void IntegrationTestGetContainerAcl()
+        public void IntegrationTestGetAndSetContainerAcl()
         {
             IBlobStorage blobStorage = new BlobStorage(StorageAccount.Name, StorageAccount.Key);
 
@@ -139,9 +139,33 @@
             bool createSucess = blobStorage.CreateContainer("test4");
             Assert.IsTrue(createSucess, "The container was not created as expected.");
 
-            // Get the ACL.
-            string containerAcl = blobStorage.GetContainerAcl("test4");
-            Assert.AreEqual("private", containerAcl, "The returned ACL was not as expected.");
+            // Check the ACL.
+            string containerAcl1 = blobStorage.GetContainerAcl("test4");
+            Assert.AreEqual("private", containerAcl1, "The returned ACL was not as expected.");
+
+            // Set ACL to "blob"
+            bool aclSuccess1 = blobStorage.SetContainerAcl("test4", "blob");
+            Assert.IsTrue(aclSuccess1, "The ACL set was not a success.");
+
+            // Check the ACL.
+            string containerAcl2 = blobStorage.GetContainerAcl("test4");
+            Assert.AreEqual("blob", containerAcl2, "The returned ACL was not as expected.");
+
+            // Set ACL to "container"
+            bool aclSuccess2 = blobStorage.SetContainerAcl("test4", "container");
+            Assert.IsTrue(aclSuccess2, "The ACL set was not a success.");
+
+            // Check the ACL.
+            string containerAcl3 = blobStorage.GetContainerAcl("test4");
+            Assert.AreEqual("container", containerAcl3, "The returned ACL was not as expected.");
+
+            // Set ACL to "private"
+            bool aclSuccess3 = blobStorage.SetContainerAcl("test4", "private");
+            Assert.IsTrue(aclSuccess3, "The ACL set was not a success.");
+
+            // Check the ACL.
+            string containerAcl4 = blobStorage.GetContainerAcl("test4");
+            Assert.AreEqual("private", containerAcl4, "The returned ACL was not as expected.");
 
             // Now delete the container.
             bool deleteSuccess = blobStorage.DeleteContainer("test4");

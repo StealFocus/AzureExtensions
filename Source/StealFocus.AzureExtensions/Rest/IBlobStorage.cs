@@ -29,5 +29,7 @@ namespace StealFocus.AzureExtensions.Rest
         bool SetContainerMetadata(string container, SortedList<string, string> metadataList);
 
         string GetContainerAcl(string container);
+
+        bool SetContainerAcl(string container, string containerAccessLevel);
     }
 }
