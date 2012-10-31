@@ -4,7 +4,7 @@
 
     public class BlobContainer
     {
-        public BlobContainer(string name, Uri url, DateTime lastModified, string etag)
+        internal BlobContainer(string name, Uri url, DateTime lastModified, string etag)
         {
             if (string.IsNullOrEmpty(name))
             {

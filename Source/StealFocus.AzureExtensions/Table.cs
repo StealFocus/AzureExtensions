@@ -4,7 +4,7 @@
 
     public class Table
     {
-        public Table(string name, string id, Uri url, DateTime updated)
+        internal Table(string name, string id, Uri url, DateTime updated)
         {
             this.Name = name;
             this.Id = id;

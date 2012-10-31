@@ -4,7 +4,7 @@
 
     public class Queue
     {
-        public Queue(string name, Uri url)
+        internal Queue(string name, Uri url)
         {
             if (string.IsNullOrEmpty(name))
             {
