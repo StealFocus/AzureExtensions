@@ -4,6 +4,14 @@ Public key is
 Public key token is
 7ce888c75194ec0e
 
+========================
+
+Azure Storage Emulator: Process cannot access the file because it is being used by another process
+netstat -p tcp -ano | findstr :10000
+tasklist /fi "pid eq ????"
+
+========================
+
 To Do:
  - Fold XML logic into objects and not hard coded strings.
  - Push formatting of "filter" parameters into objects.
