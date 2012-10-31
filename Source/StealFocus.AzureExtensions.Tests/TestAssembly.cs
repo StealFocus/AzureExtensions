@@ -38,7 +38,7 @@
         {
             if (storageAccountName != DevelopmentStorage.AccountName)
             {
-                Thread.Sleep(200);
+                Thread.Sleep(TestThrottling.IntervalBetweenTestMethodsInMilliseconds);
             }
         }
 
@@ -50,7 +50,7 @@
         {
             if (storageAccountName != DevelopmentStorage.AccountName)
             {
-                Thread.Sleep(3000);
+                Thread.Sleep(TestThrottling.IntervalBetweenTestClassesInMilliseconds);
             }
         }
 
