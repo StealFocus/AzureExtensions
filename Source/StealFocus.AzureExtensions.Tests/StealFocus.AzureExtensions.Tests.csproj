@@ -67,10 +67,10 @@
     <Compile Include="Properties\AssemblyInfoCommon.g.cs" />
     <Compile Include="QueueMessagesListTests.cs" />
     <Compile Include="QueueMessageTests.cs" />
-    <Compile Include="Rest\StorageApiRequestTests.cs" />
-    <Compile Include="Rest\BlobStorageTests.cs" />
-    <Compile Include="Rest\QueueStorageTests.cs" />
-    <Compile Include="Rest\TableStorageTests.cs" />
+    <Compile Include="Rest\StorageService\StorageApiRequestTests.cs" />
+    <Compile Include="Rest\StorageService\BlobStorageTests.cs" />
+    <Compile Include="Rest\StorageService\QueueStorageTests.cs" />
+    <Compile Include="Rest\StorageService\TableStorageTests.cs" />
     <Compile Include="TableEntity.cs" />
     <Compile Include="TestAssembly.cs" />
   </ItemGroup>

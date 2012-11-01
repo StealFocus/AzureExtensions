@@ -1,4 +1,4 @@
-namespace StealFocus.AzureExtensions.Rest
+namespace StealFocus.AzureExtensions.Rest.StorageService
 {
     using System;
 

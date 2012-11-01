@@ -1,11 +1,11 @@
-﻿namespace StealFocus.AzureExtensions.Tests.Rest
+﻿namespace StealFocus.AzureExtensions.Tests.Rest.StorageService
 {
     using System;
     using System.Collections.Generic;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using StealFocus.AzureExtensions.Rest;
+    using StealFocus.AzureExtensions.Rest.StorageService;
     using StealFocus.AzureExtensions.Tests.Configuration;
 
     [TestClass]

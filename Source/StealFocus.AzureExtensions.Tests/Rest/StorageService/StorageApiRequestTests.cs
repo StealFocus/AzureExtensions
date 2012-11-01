@@ -1,8 +1,8 @@
-﻿namespace StealFocus.AzureExtensions.Tests.Rest
+﻿namespace StealFocus.AzureExtensions.Tests.Rest.StorageService
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using StealFocus.AzureExtensions.Rest;
+    using StealFocus.AzureExtensions.Rest.StorageService;
 
     [TestClass]
     public class StorageApiRequestTests

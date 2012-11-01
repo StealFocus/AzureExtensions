@@ -65,15 +65,15 @@
     <Compile Include="Properties\AssemblyInfoCommon.g.cs" />
     <Compile Include="QueueMessage.cs" />
     <Compile Include="Rest\Configuration\DateFormat.cs" />
-    <Compile Include="Rest\IStorageApiRequest.cs" />
-    <Compile Include="Rest\StorageApiOperationAttempt.cs" />
-    <Compile Include="Rest\StorageApiRequest.cs" />
-    <Compile Include="Rest\BlobStorage.cs" />
-    <Compile Include="Rest\IBlobStorage.cs" />
-    <Compile Include="Rest\IQueueStorage.cs" />
-    <Compile Include="Rest\ITableStorage.cs" />
-    <Compile Include="Rest\QueueStorage.cs" />
-    <Compile Include="Rest\TableStorage.cs" />
+    <Compile Include="Rest\StorageService\IStorageApiRequest.cs" />
+    <Compile Include="Rest\StorageService\StorageApiOperationAttempt.cs" />
+    <Compile Include="Rest\StorageService\StorageApiRequest.cs" />
+    <Compile Include="Rest\StorageService\BlobStorage.cs" />
+    <Compile Include="Rest\StorageService\IBlobStorage.cs" />
+    <Compile Include="Rest\StorageService\IQueueStorage.cs" />
+    <Compile Include="Rest\StorageService\ITableStorage.cs" />
+    <Compile Include="Rest\StorageService\QueueStorage.cs" />
+    <Compile Include="Rest\StorageService\TableStorage.cs" />
     <Compile Include="IStorageEndpoint.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableStorageEndpoint.cs" />
@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Rest\HostedService\" />
-    <Folder Include="Rest\StorageService\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
