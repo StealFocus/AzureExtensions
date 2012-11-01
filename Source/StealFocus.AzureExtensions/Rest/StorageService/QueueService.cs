@@ -30,7 +30,7 @@
                 throw new ArgumentException("The Storage Account Key may not be null or empty.", "storageAccountKey");
             }
 
-            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new QueueStorageEndpoint(storageAccountName));
+            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new QueueServiceEndpoint(storageAccountName));
         }
 
         public Queue[] ListQueues()

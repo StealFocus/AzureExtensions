@@ -30,7 +30,7 @@
                 throw new ArgumentException("The Storage Account Key may not be null or empty.", "storageAccountKey");
             }
 
-            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new BlobStorageEndpoint(storageAccountName));
+            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new BlobServiceEndpoint(storageAccountName));
         }
 
         public BlobContainer[] ListContainers()

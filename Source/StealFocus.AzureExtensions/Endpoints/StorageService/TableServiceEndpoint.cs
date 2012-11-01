@@ -5,7 +5,7 @@
 
     using StealFocus.AzureExtensions.Configuration;
 
-    internal class TableStorageEndpoint : IStorageEndpoint
+    internal class TableServiceEndpoint : IStorageServiceEndpoint
     {
         private const string TableStorageAddressFormat = "http://{0}.table.core.windows.net/";
 
@@ -13,7 +13,7 @@
 
         private readonly Uri address;
 
-        internal TableStorageEndpoint(string storageAccountName)
+        internal TableServiceEndpoint(string storageAccountName)
         {
             if (storageAccountName == DevelopmentStorage.AccountName)
             {

@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface IStorageEndpoint
+    internal interface IStorageServiceEndpoint
     {
         Uri Address { get; }
 

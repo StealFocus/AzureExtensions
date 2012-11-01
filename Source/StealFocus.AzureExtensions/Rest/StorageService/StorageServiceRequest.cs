@@ -24,13 +24,13 @@
 
         private readonly string storageAccountKey;
 
-        private readonly IStorageEndpoint storageEndpoint;
+        private readonly IStorageServiceEndpoint storageServiceEndpoint;
 
-        internal StorageServiceRequest(string storageAccountName, string storageAccountKey, IStorageEndpoint storageEndpoint)
+        internal StorageServiceRequest(string storageAccountName, string storageAccountKey, IStorageServiceEndpoint storageServiceEndpoint)
         {
             this.storageAccountName = storageAccountName;
             this.storageAccountKey = storageAccountKey;
-            this.storageEndpoint = storageEndpoint;
+            this.storageServiceEndpoint = storageServiceEndpoint;
         }
 
         public HttpWebRequest Create(
@@ -45,13 +45,13 @@
             DateTime now = DateTime.UtcNow;
 
             // Do we need to guard against trailing "/" here?
-            string uri = this.storageEndpoint.Address + resource;
+            string uri = this.storageServiceEndpoint.Address + resource;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = method;
             request.ContentLength = 0;
             request.Headers.Add("x-ms-date", now.ToString(DateFormat.Rfc1123Pattern, CultureInfo.InvariantCulture));
             request.Headers.Add("x-ms-version", "2009-09-19");
-            if (this.storageEndpoint.IsTableStorage)
+            if (this.storageServiceEndpoint.IsTableStorage)
             {
                 request.ContentType = "application/atom+xml";
                 request.Headers.Add("DataServiceVersion", "1.0;NetFx");
@@ -73,7 +73,7 @@
                 request.ContentLength = byteArray.Length;
             }
 
-            request.Headers.Add("Authorization", CreateAuthorizationHeader(this.storageAccountName, this.storageAccountKey, method, now, request, this.storageEndpoint.IsTableStorage, ifMatch, md5));
+            request.Headers.Add("Authorization", CreateAuthorizationHeader(this.storageAccountName, this.storageAccountKey, method, now, request, this.storageServiceEndpoint.IsTableStorage, ifMatch, md5));
             if (!string.IsNullOrEmpty(requestBody))
             {
                 request.GetRequestStream().Write(byteArray, 0, byteArray.Length);

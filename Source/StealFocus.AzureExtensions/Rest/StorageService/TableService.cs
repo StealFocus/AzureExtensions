@@ -13,7 +13,7 @@
 
     public class TableService : ITableService
     {
-        private readonly TableStorageEndpoint endpoint;
+        private readonly TableServiceEndpoint endpoint;
 
         private readonly IStorageServiceRequest storageServiceRequest;
 
@@ -34,7 +34,7 @@
                 throw new ArgumentException("The Storage Account Key may not be null or empty.", "storageAccountKey");
             }
 
-            this.endpoint = new TableStorageEndpoint(storageAccountName);
+            this.endpoint = new TableServiceEndpoint(storageAccountName);
             this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, this.endpoint);
         }
 
