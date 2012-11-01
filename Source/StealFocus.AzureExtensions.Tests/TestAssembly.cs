@@ -6,7 +6,7 @@
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using StealFocus.AzureExtensions.Configuration;
+    using StealFocus.AzureExtensions.StorageService.Configuration;
     using StealFocus.AzureExtensions.Tests.Configuration;
 
     [TestClass]
