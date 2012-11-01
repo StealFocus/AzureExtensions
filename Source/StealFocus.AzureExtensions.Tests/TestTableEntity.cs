@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class TableEntity
+    internal class TestTableEntity
     {
         public byte SomeByteProperty { get; set; }
 

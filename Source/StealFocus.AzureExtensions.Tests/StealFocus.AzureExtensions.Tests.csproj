@@ -71,7 +71,7 @@
     <Compile Include="Rest\StorageService\BlobServiceTests.cs" />
     <Compile Include="Rest\StorageService\QueueServiceTests.cs" />
     <Compile Include="Rest\StorageService\TableServiceTests.cs" />
-    <Compile Include="TableEntity.cs" />
+    <Compile Include="TestTableEntity.cs" />
     <Compile Include="TestAssembly.cs" />
   </ItemGroup>
   <ItemGroup>
