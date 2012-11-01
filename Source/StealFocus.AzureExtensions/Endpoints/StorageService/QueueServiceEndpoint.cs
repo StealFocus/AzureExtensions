@@ -7,13 +7,13 @@
 
     internal class QueueServiceEndpoint : IStorageServiceEndpoint
     {
-        private const string QueueStorageAddressFormat = "http://{0}.queue.core.windows.net/";
+        private const string QueueStorageAddressFormat = "{0}://{1}.queue.core.windows.net/";
 
         private const string QueueStorageEmulatorAddressFormat = "http://127.0.0.1:10001/{0}/";
 
         private readonly Uri address;
 
-        internal QueueServiceEndpoint(string storageAccountName)
+        internal QueueServiceEndpoint(string storageAccountName, bool useHttps)
         {
             if (storageAccountName == DevelopmentStorage.AccountName)
             {
@@ -21,8 +21,13 @@
             }
             else
             {
-                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, QueueStorageAddressFormat, storageAccountName));
+                string protocol = useHttps ? "https" : "http";
+                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, QueueStorageAddressFormat, protocol, storageAccountName));
             }
+        }
+        
+        internal QueueServiceEndpoint(string storageAccountName) : this(storageAccountName, true)
+        {
         }
 
         public Uri Address

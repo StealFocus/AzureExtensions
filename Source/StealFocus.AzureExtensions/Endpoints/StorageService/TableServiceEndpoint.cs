@@ -7,13 +7,13 @@
 
     internal class TableServiceEndpoint : IStorageServiceEndpoint
     {
-        private const string TableStorageAddressFormat = "http://{0}.table.core.windows.net/";
+        private const string TableStorageAddressFormat = "{0}://{1}.table.core.windows.net/";
 
         private const string TableStorageEmulatorAddressFormat = "http://127.0.0.1:10002/{0}/";
 
         private readonly Uri address;
 
-        internal TableServiceEndpoint(string storageAccountName)
+        internal TableServiceEndpoint(string storageAccountName, bool useHttps)
         {
             if (storageAccountName == DevelopmentStorage.AccountName)
             {
@@ -21,8 +21,13 @@
             }
             else
             {
-                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, TableStorageAddressFormat, storageAccountName));
+                string protocol = useHttps ? "https" : "http";
+                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, TableStorageAddressFormat, protocol, storageAccountName));
             }
+        }
+        
+        internal TableServiceEndpoint(string storageAccountName) : this(storageAccountName, true)
+        {
         }
 
         public Uri Address

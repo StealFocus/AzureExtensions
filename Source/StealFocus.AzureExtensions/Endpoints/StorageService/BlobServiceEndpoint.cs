@@ -7,13 +7,13 @@
 
     internal class BlobServiceEndpoint : IStorageServiceEndpoint
     {
-        private const string BlobStorageAddressFormat = "http://{0}.blob.core.windows.net/";
+        private const string BlobStorageAddressFormat = "{0}://{1}.blob.core.windows.net/";
 
         private const string BlobStorageEmulatorAddressFormat = "http://127.0.0.1:10000/{0}/";
 
         private readonly Uri address;
 
-        internal BlobServiceEndpoint(string storageAccountName)
+        internal BlobServiceEndpoint(string storageAccountName, bool useHttps)
         {
             if (storageAccountName == DevelopmentStorage.AccountName)
             {
@@ -21,8 +21,13 @@
             }
             else
             {
-                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, BlobStorageAddressFormat, storageAccountName));
+                string protocol = useHttps ? "https" : "http";
+                this.address = new Uri(string.Format(CultureInfo.CurrentCulture, BlobStorageAddressFormat, protocol, storageAccountName));
             }
+        }
+
+        internal BlobServiceEndpoint(string storageAccountName) : this(storageAccountName, true)
+        {
         }
 
         public Uri Address
