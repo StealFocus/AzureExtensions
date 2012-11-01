@@ -9,7 +9,7 @@
 
     public class QueueService : IQueueService
     {
-        private readonly IStorageApiRequest storageApiRequest;
+        private readonly IStorageServiceRequest storageServiceRequest;
 
         /// <summary>
         /// Creates a new instance of <see cref="QueueService" />.
@@ -28,7 +28,7 @@
                 throw new ArgumentException("The Storage Account Key may not be null or empty.", "storageAccountKey");
             }
 
-            this.storageApiRequest = new StorageApiRequest(storageAccountName, storageAccountKey, new QueueStorageEndpoint(storageAccountName));
+            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new QueueStorageEndpoint(storageAccountName));
         }
 
         public Queue[] ListQueues()
@@ -36,7 +36,7 @@
             List<Queue> queues = new List<Queue>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", "?comp=list");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "?comp=list");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -109,12 +109,12 @@
 
         public Queue[] ListQueues(int numberOfAttempts)
         {
-            return this.ListQueues(numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.ListQueues(numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public Queue[] ListQueues(int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(this.ListQueues, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(this.ListQueues, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool CreateQueue(string queueName)
@@ -126,7 +126,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", queueName);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", queueName);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -155,12 +155,12 @@
 
         public bool CreateQueue(string queueName, int numberOfAttempts)
         {
-            return this.CreateQueue(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.CreateQueue(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool CreateQueue(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.CreateQueue(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.CreateQueue(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool DeleteQueue(string queueName)
@@ -172,7 +172,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", queueName);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -193,12 +193,12 @@
 
         public bool DeleteQueue(string queueName, int numberOfAttempts)
         {
-            return this.DeleteQueue(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteQueue(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool DeleteQueue(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteQueue(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.DeleteQueue(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public SortedList<string, string> GetQueueMetadata(string queueName)
@@ -211,7 +211,7 @@
             SortedList<string, string> metadataList = new SortedList<string, string>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", queueName + "?comp=metadata", string.Empty, metadataList);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("HEAD", queueName + "?comp=metadata", string.Empty, metadataList);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -246,12 +246,12 @@
 
         public SortedList<string, string> GetQueueMetadata(string queueName, int numberOfAttempts)
         {
-            return this.GetQueueMetadata(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.GetQueueMetadata(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public SortedList<string, string> GetQueueMetadata(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.GetQueueMetadata(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.GetQueueMetadata(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool SetQueueMetadata(string queueName, SortedList<string, string> metadataList)
@@ -274,7 +274,7 @@
                     headers.Add("x-ms-meta-" + value.Key, value.Value);
                 }
 
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", queueName + "?comp=metadata", string.Empty, headers);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", queueName + "?comp=metadata", string.Empty, headers);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -295,12 +295,12 @@
         
         public bool SetQueueMetadata(string queueName, SortedList<string, string> metadataList, int numberOfAttempts)
         {
-            return this.SetQueueMetadata(queueName, metadataList, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.SetQueueMetadata(queueName, metadataList, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool SetQueueMetadata(string queueName, SortedList<string, string> metadataList, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.SetQueueMetadata(queueName, metadataList), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.SetQueueMetadata(queueName, metadataList), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool PutMessage(string queueName, string messageBody)
@@ -318,7 +318,7 @@
             try
             {
                 string message = new QueueMessage(messageBody).GetRawXml();
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("POST", queueName + "/messages", message);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", queueName + "/messages", message);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -339,12 +339,12 @@
 
         public bool PutMessage(string queueName, string messageBody, int numberOfAttempts)
         {
-            return this.PutMessage(queueName, messageBody, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.PutMessage(queueName, messageBody, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool PutMessage(string queueName, string messageBody, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.PutMessage(queueName, messageBody), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.PutMessage(queueName, messageBody), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public QueueMessage PeekMessage(string queueName)
@@ -356,7 +356,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", queueName + "/messages?peekonly=true");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", queueName + "/messages?peekonly=true");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 if (responseStream == null)
@@ -396,12 +396,12 @@
         
         public QueueMessage PeekMessage(string queueName, int numberOfAttempts)
         {
-            return this.PeekMessage(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.PeekMessage(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public QueueMessage PeekMessage(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.PeekMessage(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.PeekMessage(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public QueueMessage GetMessage(string queueName)
@@ -413,7 +413,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", queueName + "/messages");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", queueName + "/messages");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 if (responseStream == null)
@@ -453,12 +453,12 @@
         
         public QueueMessage GetMessage(string queueName, int numberOfAttempts)
         {
-            return this.GetMessage(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.GetMessage(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public QueueMessage GetMessage(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.GetMessage(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.GetMessage(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool ClearMessages(string queueName)
@@ -470,7 +470,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", queueName + "/messages");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName + "/messages");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -491,12 +491,12 @@
 
         public bool ClearMessages(string queueName, int numberOfAttempts)
         {
-            return this.ClearMessages(queueName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.ClearMessages(queueName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool ClearMessages(string queueName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.ClearMessages(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.ClearMessages(queueName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool DeleteMessage(string queueName, Guid messageId, string popReceipt)
@@ -518,7 +518,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", queueName + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -547,12 +547,12 @@
 
         public bool DeleteMessage(string queueName, Guid messageId, string popReceipt, int numberOfAttempts)
         {
-            return this.DeleteMessage(queueName, messageId, popReceipt, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteMessage(queueName, messageId, popReceipt, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool DeleteMessage(string queueName, Guid messageId, string popReceipt, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteMessage(queueName, messageId, popReceipt), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.DeleteMessage(queueName, messageId, popReceipt), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
     }
 }

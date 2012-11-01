@@ -3,7 +3,7 @@ namespace StealFocus.AzureExtensions.Rest.StorageService
     using System.Collections.Generic;
     using System.Net;
 
-    internal interface IStorageApiRequest
+    internal interface IStorageServiceRequest
     {
         HttpWebRequest Create(
             string method,

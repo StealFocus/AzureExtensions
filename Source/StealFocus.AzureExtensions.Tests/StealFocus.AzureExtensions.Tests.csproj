@@ -67,7 +67,7 @@
     <Compile Include="Properties\AssemblyInfoCommon.g.cs" />
     <Compile Include="QueueMessagesListTests.cs" />
     <Compile Include="QueueMessageTests.cs" />
-    <Compile Include="Rest\StorageService\StorageApiRequestTests.cs" />
+    <Compile Include="Rest\StorageService\StorageServiceRequestTests.cs" />
     <Compile Include="Rest\StorageService\BlobServiceTests.cs" />
     <Compile Include="Rest\StorageService\QueueServiceTests.cs" />
     <Compile Include="Rest\StorageService\TableServiceTests.cs" />

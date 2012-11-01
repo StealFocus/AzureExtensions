@@ -9,7 +9,7 @@
 
     public class BlobService : IBlobService
     {
-        private readonly IStorageApiRequest storageApiRequest;
+        private readonly IStorageServiceRequest storageServiceRequest;
 
         /// <summary>
         /// Creates a new instance of <see cref="QueueService" />.
@@ -28,7 +28,7 @@
                 throw new ArgumentException("The Storage Account Key may not be null or empty.", "storageAccountKey");
             }
 
-            this.storageApiRequest = new StorageApiRequest(storageAccountName, storageAccountKey, new BlobStorageEndpoint(storageAccountName));
+            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, new BlobStorageEndpoint(storageAccountName));
         }
 
         public BlobContainer[] ListContainers()
@@ -36,7 +36,7 @@
             List<BlobContainer> blobContainers = new List<BlobContainer>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", "?comp=list");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "?comp=list");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
@@ -135,12 +135,12 @@
 
         public BlobContainer[] ListContainers(int numberOfAttempts)
         {
-            return this.ListContainers(numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.ListContainers(numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public BlobContainer[] ListContainers(int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(this.ListContainers, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(this.ListContainers, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool CreateContainer(string containerName)
@@ -152,7 +152,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -173,12 +173,12 @@
 
         public bool CreateContainer(string containerName, int numberOfAttempts)
         {
-            return this.CreateContainer(containerName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.CreateContainer(containerName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool CreateContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.CreateContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.CreateContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool DeleteContainer(string containerName)
@@ -190,7 +190,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", containerName + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -211,12 +211,12 @@
 
         public bool DeleteContainer(string containerName, int numberOfAttempts)
         {
-            return this.DeleteContainer(containerName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteContainer(containerName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool DeleteContainer(string containerName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.DeleteContainer(containerName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public SortedList<string, string> GetContainerProperties(string containerName)
@@ -228,7 +228,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", containerName + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("HEAD", containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
@@ -271,7 +271,7 @@
             SortedList<string, string> metadataList = new SortedList<string, string>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("HEAD", containerName + "?restype=container&comp=metadata", string.Empty, metadataList);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("HEAD", containerName + "?restype=container&comp=metadata", string.Empty, metadataList);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
@@ -332,7 +332,7 @@
                     }
                 }
 
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container&comp=metadata", string.Empty, headers);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "?restype=container&comp=metadata", string.Empty, headers);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -362,7 +362,7 @@
             string signedIdentifiersXml = null;
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", containerName + "?restype=container&comp=acl");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "?restype=container&comp=acl");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
@@ -457,7 +457,7 @@
                         break;
                 }
 
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("PUT", containerName + "?restype=container&comp=acl", containerAcl.SignedIdentifiersXml, headers);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "?restype=container&comp=acl", containerAcl.SignedIdentifiersXml, headers);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;

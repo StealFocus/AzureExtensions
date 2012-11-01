@@ -13,7 +13,7 @@
     {
         private readonly TableStorageEndpoint endpoint;
 
-        private readonly IStorageApiRequest storageApiRequest;
+        private readonly IStorageServiceRequest storageServiceRequest;
 
         /// <summary>
         /// Creates a new instance of <see cref="TableService" />.
@@ -33,7 +33,7 @@
             }
 
             this.endpoint = new TableStorageEndpoint(storageAccountName);
-            this.storageApiRequest = new StorageApiRequest(storageAccountName, storageAccountKey, this.endpoint);
+            this.storageServiceRequest = new StorageServiceRequest(storageAccountName, storageAccountKey, this.endpoint);
         }
 
         public Table[] ListTables()
@@ -41,7 +41,7 @@
             List<Table> tables = new List<Table>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("GET", "Tables");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "Tables");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -146,12 +146,12 @@
 
         public Table[] ListTables(int numberOfAttempts)
         {
-            return this.ListTables(numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.ListTables(numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public Table[] ListTables(int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(this.ListTables, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(this.ListTables, numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool CreateTable(string tableName)
@@ -183,7 +183,7 @@
                     "  </content> " +
                     "</entry>";
                 string requestBody = string.Format(CultureInfo.CurrentCulture, RequestBodyFormat, now, tableName);
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("POST", "Tables", requestBody);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", "Tables", requestBody);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -204,12 +204,12 @@
 
         public bool CreateTable(string tableName, int numberOfAttempts)
         {
-            return this.CreateTable(tableName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.CreateTable(tableName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool CreateTable(string tableName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.CreateTable(tableName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.CreateTable(tableName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool DeleteTable(string tableName)
@@ -221,7 +221,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("DELETE", "Tables('" + tableName + "')");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", "Tables('" + tableName + "')");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -242,12 +242,12 @@
 
         public bool DeleteTable(string tableName, int numberOfAttempts)
         {
-            return this.DeleteTable(tableName, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteTable(tableName, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool DeleteTable(string tableName, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteTable(tableName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.DeleteTable(tableName), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool InsertEntity(string tableName, string partitionKey, string rowKey, object entity)
@@ -305,7 +305,7 @@
                     "  </content> " +
                     "</entry>";
                 string requestBody = string.Format(CultureInfo.CurrentCulture, RequestBodyFormat, now, properties);
-                HttpWebRequest httpWebRequest = this.storageApiRequest.Create("POST", tableName, requestBody);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", tableName, requestBody);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -326,12 +326,12 @@
 
         public bool InsertEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts)
         {
-            return this.InsertEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.InsertEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool InsertEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.InsertEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.InsertEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public string GetEntity(string tableName, string partitionKey, string rowKey)
@@ -357,7 +357,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageApiRequest.Create("GET", resource, null, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create("GET", resource, null, headers);
                 request.Accept = "application/atom+xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -395,12 +395,12 @@
 
         public string GetEntity(string tableName, string partitionKey, string rowKey, int numberOfAttempts)
         {
-            return this.GetEntity(tableName, partitionKey, rowKey, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.GetEntity(tableName, partitionKey, rowKey, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public string GetEntity(string tableName, string partitionKey, string rowKey, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.GetEntity(tableName, partitionKey, rowKey), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.GetEntity(tableName, partitionKey, rowKey), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public string QueryEntities(string tableName, string filter)
@@ -419,7 +419,7 @@
             try
             {
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "()?$filter=" + Uri.EscapeDataString(filter));
-                HttpWebRequest request = this.storageApiRequest.Create("GET", resource);
+                HttpWebRequest request = this.storageServiceRequest.Create("GET", resource);
                 request.Accept = "application/atom+xml,application/xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -457,12 +457,12 @@
 
         public string QueryEntities(string tableName, string filter, int numberOfAttempts)
         {
-            return this.QueryEntities(tableName, filter, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.QueryEntities(tableName, filter, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public string QueryEntities(string tableName, string filter, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.QueryEntities(tableName, filter), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.QueryEntities(tableName, filter), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool ReplaceUpdateEntity(string tableName, string partitionKey, string rowKey, object entity)
@@ -525,7 +525,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageApiRequest.Create("PUT", resource, requestBody, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create("PUT", resource, requestBody, headers);
                 request.Accept = "application/atom+xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 response.Close();
@@ -547,12 +547,12 @@
 
         public bool ReplaceUpdateEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts)
         {
-            return this.ReplaceUpdateEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.ReplaceUpdateEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool ReplaceUpdateEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.ReplaceUpdateEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.ReplaceUpdateEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool MergeUpdateEntity(string tableName, string partitionKey, string rowKey, object entity)
@@ -615,7 +615,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageApiRequest.Create("MERGE", resource, requestBody, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create("MERGE", resource, requestBody, headers);
                 request.Accept = "application/atom+xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 response.Close();
@@ -637,12 +637,12 @@
 
         public bool MergeUpdateEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts)
         {
-            return this.MergeUpdateEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.MergeUpdateEntity(tableName, partitionKey, rowKey, entity, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool MergeUpdateEntity(string tableName, string partitionKey, string rowKey, object entity, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.MergeUpdateEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.MergeUpdateEntity(tableName, partitionKey, rowKey, entity), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
 
         public bool DeleteEntity(string tableName, string partitionKey, string rowKey)
@@ -667,7 +667,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageApiRequest.Create("DELETE", resource, null, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create("DELETE", resource, null, headers);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 response.Close();
                 return true;
@@ -688,12 +688,12 @@
 
         public bool DeleteEntity(string tableName, string partitionKey, string rowKey, int numberOfAttempts)
         {
-            return this.DeleteEntity(tableName, partitionKey, rowKey, numberOfAttempts, StorageApiRequest.DefaultAttemptIntervalInMilliseconds);
+            return this.DeleteEntity(tableName, partitionKey, rowKey, numberOfAttempts, StorageServiceRequest.DefaultAttemptIntervalInMilliseconds);
         }
 
         public bool DeleteEntity(string tableName, string partitionKey, string rowKey, int numberOfAttempts, int timeBetweenAttemptsInMilliseconds)
         {
-            return StorageApiRequest.Attempt(() => this.DeleteEntity(tableName, partitionKey, rowKey), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
+            return StorageServiceRequest.Attempt(() => this.DeleteEntity(tableName, partitionKey, rowKey), numberOfAttempts, timeBetweenAttemptsInMilliseconds);
         }
     }
 }

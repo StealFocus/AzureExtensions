@@ -5,7 +5,7 @@
     using StealFocus.AzureExtensions.Rest.StorageService;
 
     [TestClass]
-    public class StorageApiRequestTests
+    public class StorageServiceRequestTests
     {
         private int attemptCount;
 
@@ -15,7 +15,7 @@
         public void UnitTestAttemptWithSuccess()
         {
             this.errorUntilAttemptCount = 0;
-            bool result = StorageApiRequest.Attempt(this.DoSomething, 3, 0);
+            bool result = StorageServiceRequest.Attempt(this.DoSomething, 3, 0);
             Assert.IsTrue(result);
         }
 
@@ -23,7 +23,7 @@
         public void UnitTestAttemptWithRetriesAndSuccess()
         {
             this.errorUntilAttemptCount = 1;
-            bool result = StorageApiRequest.Attempt(this.DoSomething, 3, 0);
+            bool result = StorageServiceRequest.Attempt(this.DoSomething, 3, 0);
             Assert.IsTrue(result);
         }
 
@@ -34,7 +34,7 @@
             this.errorUntilAttemptCount = 0;
             try
             {
-                StorageApiRequest.Attempt(this.DoSomething, 1, 0);
+                StorageServiceRequest.Attempt(this.DoSomething, 1, 0);
             }
             catch (AzureExtensionsException e)
             {

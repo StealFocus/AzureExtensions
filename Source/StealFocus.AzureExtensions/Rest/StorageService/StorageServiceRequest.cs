@@ -13,7 +13,7 @@
 
     using StealFocus.AzureExtensions.Rest.Configuration;
 
-    internal class StorageApiRequest : IStorageApiRequest
+    internal class StorageServiceRequest : IStorageServiceRequest
     {
         internal const int DefaultAttemptIntervalInMilliseconds = 200;
 
@@ -25,7 +25,7 @@
 
         private readonly IStorageEndpoint storageEndpoint;
 
-        internal StorageApiRequest(string storageAccountName, string storageAccountKey, IStorageEndpoint storageEndpoint)
+        internal StorageServiceRequest(string storageAccountName, string storageAccountKey, IStorageEndpoint storageEndpoint)
         {
             this.storageAccountName = storageAccountName;
             this.storageAccountKey = storageAccountKey;
@@ -81,7 +81,7 @@
             return request;
         }
 
-        internal static T Attempt<T>(StorageApiOperationAttempt<T> attemptOperation, int numberOfAttempts = DefaultAttemptCount, int attemptIntervalInMilliseconds = DefaultAttemptIntervalInMilliseconds)
+        internal static T Attempt<T>(StorageServiceOperationAttempt<T> attemptOperation, int numberOfAttempts = DefaultAttemptCount, int attemptIntervalInMilliseconds = DefaultAttemptIntervalInMilliseconds)
         {
             if (numberOfAttempts < 1)
             {

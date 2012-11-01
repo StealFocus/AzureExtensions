@@ -65,9 +65,9 @@
     <Compile Include="Properties\AssemblyInfoCommon.g.cs" />
     <Compile Include="QueueMessage.cs" />
     <Compile Include="Rest\Configuration\DateFormat.cs" />
-    <Compile Include="Rest\StorageService\IStorageApiRequest.cs" />
-    <Compile Include="Rest\StorageService\StorageApiOperationAttempt.cs" />
-    <Compile Include="Rest\StorageService\StorageApiRequest.cs" />
+    <Compile Include="Rest\StorageService\IStorageServiceRequest.cs" />
+    <Compile Include="Rest\StorageService\StorageServiceOperationAttempt.cs" />
+    <Compile Include="Rest\StorageService\StorageServiceRequest.cs" />
     <Compile Include="Rest\StorageService\BlobService.cs" />
     <Compile Include="Rest\StorageService\IBlobService.cs" />
     <Compile Include="Rest\StorageService\IQueueService.cs" />
