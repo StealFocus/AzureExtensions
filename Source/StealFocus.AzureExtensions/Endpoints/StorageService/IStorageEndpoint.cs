@@ -1,4 +1,4 @@
-﻿namespace StealFocus.AzureExtensions
+﻿namespace StealFocus.AzureExtensions.Endpoints.StorageService
 {
     using System;
 

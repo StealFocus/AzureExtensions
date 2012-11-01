@@ -11,6 +11,7 @@
     using System.Threading;
     using System.Web;
 
+    using StealFocus.AzureExtensions.Endpoints.StorageService;
     using StealFocus.AzureExtensions.Rest.Configuration;
 
     internal class StorageServiceRequest : IStorageServiceRequest

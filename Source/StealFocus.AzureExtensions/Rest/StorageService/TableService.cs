@@ -9,6 +9,8 @@
     using System.Text;
     using System.Xml.Linq;
 
+    using StealFocus.AzureExtensions.Endpoints.StorageService;
+
     public class TableService : ITableService
     {
         private readonly TableStorageEndpoint endpoint;

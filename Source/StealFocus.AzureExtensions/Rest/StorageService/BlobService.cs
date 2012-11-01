@@ -7,6 +7,8 @@
     using System.Net;
     using System.Xml.Linq;
 
+    using StealFocus.AzureExtensions.Endpoints.StorageService;
+
     public class BlobService : IBlobService
     {
         private readonly IStorageServiceRequest storageServiceRequest;
