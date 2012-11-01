@@ -115,12 +115,12 @@
             string method, 
             DateTime now, 
             HttpWebRequest request, 
-            bool tableStorage, 
+            bool tableService, 
             string ifMatch = "", 
             string md5 = "")
         {
             string messageSignature;
-            if (tableStorage)
+            if (tableService)
             {
                 messageSignature = string.Format(
                     CultureInfo.CurrentCulture,
@@ -200,7 +200,7 @@
             return list;
         }
 
-        private static string GetCanonicalizedResource(Uri address, string accountName, bool tableStorage)
+        private static string GetCanonicalizedResource(Uri address, string accountName, bool tableService)
         {
             StringBuilder str = new StringBuilder();
             StringBuilder builder = new StringBuilder("/");
@@ -208,7 +208,7 @@
             builder.Append(address.AbsolutePath);
             str.Append(builder);
             NameValueCollection values2 = new NameValueCollection();
-            if (!tableStorage)
+            if (!tableService)
             {
                 NameValueCollection values = HttpUtility.ParseQueryString(address.Query);
                 foreach (string str2 in values.Keys)

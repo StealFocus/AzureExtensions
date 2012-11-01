@@ -9,18 +9,18 @@
     using System.Text;
     using System.Xml.Linq;
 
-    public class TableStorage : ITableStorage
+    public class TableService : ITableService
     {
         private readonly TableStorageEndpoint endpoint;
 
         private readonly IStorageApiRequest storageApiRequest;
 
         /// <summary>
-        /// Creates a new instance of <see cref="TableStorage" />.
+        /// Creates a new instance of <see cref="TableService" />.
         /// </summary>
         /// <param name="storageAccountName">A <see cref="string"/>. The Storage account name, for the Storage Emulator this is 'devstoreaccount1'.</param>
         /// <param name="storageAccountKey">A <see cref="string"/>. The Storage account key, for the Storage Emulator this is 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=='.</param>
-        public TableStorage(string storageAccountName, string storageAccountKey)
+        public TableService(string storageAccountName, string storageAccountKey)
         {
             if (string.IsNullOrEmpty(storageAccountName))
             {

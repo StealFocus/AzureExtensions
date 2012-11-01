@@ -9,7 +9,7 @@
     using StealFocus.AzureExtensions.Tests.Configuration;
 
     [TestClass]
-    public class TableStorageTests
+    public class TableServiceTests
     {
         /// <remarks>
         /// Called once per test class.
@@ -51,8 +51,8 @@
         [TestMethod]
         public void IntegrationTestListNames()
         {
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            Table[] tables = tableStorage.ListTables();
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            Table[] tables = tableService.ListTables();
             Assert.IsTrue(tables.Length > 0, "The table list was empty when it was not expected to be so.");
             foreach (Table table in tables)
             {
@@ -63,8 +63,8 @@
         [TestMethod]
         public void IntegrationTestListNamesWithRetries()
         {
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            Table[] tables = tableStorage.ListTables(2);
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            Table[] tables = tableService.ListTables(2);
             Assert.IsTrue(tables.Length > 0, "The table list was empty when it was not expected to be so.");
             foreach (Table table in tables)
             {
@@ -75,20 +75,20 @@
         [TestMethod]
         public void IntegrationTestCreateTableAndDeleteTable()
         {
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            bool createSuccess = tableStorage.CreateTable("Test1");
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            bool createSuccess = tableService.CreateTable("Test1");
             Assert.IsTrue(createSuccess, "The table was not created as expected.");
-            bool deleteSuccess = tableStorage.DeleteTable("Test1");
+            bool deleteSuccess = tableService.DeleteTable("Test1");
             Assert.IsTrue(deleteSuccess, "The table was not deleted as expected.");
         }
 
         [TestMethod]
         public void IntegrationTestCreateTableAndDeleteTableWithRetries()
         {
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            bool createSuccess = tableStorage.CreateTable("Test2", 2);
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            bool createSuccess = tableService.CreateTable("Test2", 2);
             Assert.IsTrue(createSuccess, "The table was not created as expected.");
-            bool deleteSuccess = tableStorage.DeleteTable("Test2", 2);
+            bool deleteSuccess = tableService.DeleteTable("Test2", 2);
             Assert.IsTrue(deleteSuccess, "The table was not deleted as expected.");
         }
 
@@ -109,15 +109,15 @@
                     SomeShortProperty = 7,
                     SomeStringProperty = "abc"
                 };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test3");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test3");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test3", 
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture), 
                 tableEntity.SomeStringProperty, 
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            tableStorage.DeleteTable("Test3");
+            tableService.DeleteTable("Test3");
         }
 
         [TestMethod]
@@ -137,16 +137,16 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test4");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test4");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test4",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity,
                 2);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            tableStorage.DeleteTable("Test4");
+            tableService.DeleteTable("Test4");
         }
 
         [TestMethod]
@@ -166,15 +166,15 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test5");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test5");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test5",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            tableStorage.DeleteTable("Test5");
+            tableService.DeleteTable("Test5");
         }
 
         [TestMethod]
@@ -194,15 +194,15 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test6");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test6");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test6",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            tableStorage.DeleteTable("Test6");
+            tableService.DeleteTable("Test6");
         }
 
         [TestMethod]
@@ -222,15 +222,15 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = null
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test7");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test7");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test7",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeIntegerProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            tableStorage.DeleteTable("Test7");
+            tableService.DeleteTable("Test7");
         }
 
         [TestMethod]
@@ -250,20 +250,20 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test8");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test8");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test8",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            string entityXml = tableStorage.GetEntity(
+            string entityXml = tableService.GetEntity(
                 "Test8", 
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture), 
                 tableEntity.SomeStringProperty);
             Assert.IsNotNull(entityXml);
-            tableStorage.DeleteTable("Test8");
+            tableService.DeleteTable("Test8");
         }
 
         [TestMethod]
@@ -283,21 +283,21 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test9");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test9");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test9",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            string entityXml = tableStorage.GetEntity(
+            string entityXml = tableService.GetEntity(
                 "Test9",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 2);
             Assert.IsNotNull(entityXml);
-            tableStorage.DeleteTable("Test9");
+            tableService.DeleteTable("Test9");
         }
 
         [TestMethod]
@@ -331,23 +331,23 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "def"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test10");
-            bool insertSuccess1 = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test10");
+            bool insertSuccess1 = tableService.InsertEntity(
                 "Test10",
                 tableEntity1.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity1.SomeStringProperty,
                 tableEntity1);
             Assert.IsTrue(insertSuccess1, "The entity was not successfully inserted as expected.");
-            bool insertSuccess2 = tableStorage.InsertEntity(
+            bool insertSuccess2 = tableService.InsertEntity(
                 "Test10",
                 tableEntity2.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity2.SomeStringProperty,
                 tableEntity2);
             Assert.IsTrue(insertSuccess2, "The entity was not successfully inserted as expected.");
-            string entitiesXml = tableStorage.QueryEntities("Test10", "PartitionKey eq 'a'");
+            string entitiesXml = tableService.QueryEntities("Test10", "PartitionKey eq 'a'");
             Assert.IsNotNull(entitiesXml);
-            tableStorage.DeleteTable("Test10");
+            tableService.DeleteTable("Test10");
         }
 
         [TestMethod]
@@ -381,23 +381,23 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "def"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test11");
-            bool insertSuccess1 = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test11");
+            bool insertSuccess1 = tableService.InsertEntity(
                 "Test11",
                 tableEntity1.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity1.SomeStringProperty,
                 tableEntity1);
             Assert.IsTrue(insertSuccess1, "The entity was not successfully inserted as expected.");
-            bool insertSuccess2 = tableStorage.InsertEntity(
+            bool insertSuccess2 = tableService.InsertEntity(
                 "Test11",
                 tableEntity2.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity2.SomeStringProperty,
                 tableEntity2);
             Assert.IsTrue(insertSuccess2, "The entity was not successfully inserted as expected.");
-            string entitiesXml = tableStorage.QueryEntities("Test11", "PartitionKey eq 'a'", 2);
+            string entitiesXml = tableService.QueryEntities("Test11", "PartitionKey eq 'a'", 2);
             Assert.IsNotNull(entitiesXml);
-            tableStorage.DeleteTable("Test11");
+            tableService.DeleteTable("Test11");
         }
 
         [TestMethod]
@@ -417,22 +417,22 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test12");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test12");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test12",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
             tableEntity.SomeByteProperty = 2;
-            bool updateSuccess = tableStorage.ReplaceUpdateEntity(
+            bool updateSuccess = tableService.ReplaceUpdateEntity(
                 "Test12",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(updateSuccess);
-            tableStorage.DeleteTable("Test12");
+            tableService.DeleteTable("Test12");
         }
 
         [TestMethod]
@@ -452,23 +452,23 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test13");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test13");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test13",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
             tableEntity.SomeByteProperty = 2;
-            bool updateSuccess = tableStorage.ReplaceUpdateEntity(
+            bool updateSuccess = tableService.ReplaceUpdateEntity(
                 "Test13",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity,
                 2);
             Assert.IsTrue(updateSuccess);
-            tableStorage.DeleteTable("Test13");
+            tableService.DeleteTable("Test13");
         }
 
         [TestMethod]
@@ -488,22 +488,22 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test14");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test14");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test14",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
             tableEntity.SomeByteProperty = 2;
-            bool updateSuccess = tableStorage.MergeUpdateEntity(
+            bool updateSuccess = tableService.MergeUpdateEntity(
                 "Test14",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(updateSuccess);
-            tableStorage.DeleteTable("Test14");
+            tableService.DeleteTable("Test14");
         }
 
         [TestMethod]
@@ -523,23 +523,23 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test15");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test15");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test15",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
             tableEntity.SomeByteProperty = 2;
-            bool updateSuccess = tableStorage.MergeUpdateEntity(
+            bool updateSuccess = tableService.MergeUpdateEntity(
                 "Test15",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity,
                 2);
             Assert.IsTrue(updateSuccess);
-            tableStorage.DeleteTable("Test15");
+            tableService.DeleteTable("Test15");
         }
 
         [TestMethod]
@@ -559,20 +559,20 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test16");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test16");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test16",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            bool deleteSuccess = tableStorage.DeleteEntity(
+            bool deleteSuccess = tableService.DeleteEntity(
                 "Test16",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty);
             Assert.IsTrue(deleteSuccess);
-            tableStorage.DeleteTable("Test16");
+            tableService.DeleteTable("Test16");
         }
 
         [TestMethod]
@@ -592,33 +592,33 @@
                 SomeShortProperty = 7,
                 SomeStringProperty = "abc"
             };
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            tableStorage.CreateTable("Test17");
-            bool insertSuccess = tableStorage.InsertEntity(
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            tableService.CreateTable("Test17");
+            bool insertSuccess = tableService.InsertEntity(
                 "Test17",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 tableEntity);
             Assert.IsTrue(insertSuccess, "The entity was not successfully inserted as expected.");
-            bool deleteSuccess = tableStorage.DeleteEntity(
+            bool deleteSuccess = tableService.DeleteEntity(
                 "Test17",
                 tableEntity.SomeCharacterProperty.ToString(CultureInfo.CurrentCulture),
                 tableEntity.SomeStringProperty,
                 2);
             Assert.IsTrue(deleteSuccess);
-            tableStorage.DeleteTable("Test17");
+            tableService.DeleteTable("Test17");
         }
 
         private static void CleanupTables()
         {
-            ITableStorage tableStorage = new TableStorage(StorageAccount.Name, StorageAccount.Key);
-            Table[] tables = tableStorage.ListTables();
+            ITableService tableService = new TableService(StorageAccount.Name, StorageAccount.Key);
+            Table[] tables = tableService.ListTables();
             bool failure = false;
             foreach (Table table in tables)
             {
                 if (table.Name.StartsWith("Test", StringComparison.OrdinalIgnoreCase))
                 {
-                    bool deleteSuccess = tableStorage.DeleteTable(table.Name);
+                    bool deleteSuccess = tableService.DeleteTable(table.Name);
                     if (!deleteSuccess)
                     {
                         Console.WriteLine("Failed to delete table named '{0}'.", table.Name);

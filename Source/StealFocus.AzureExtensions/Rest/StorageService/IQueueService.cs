@@ -3,7 +3,7 @@ namespace StealFocus.AzureExtensions.Rest.StorageService
     using System;
     using System.Collections.Generic;
 
-    public interface IQueueStorage
+    public interface IQueueService
     {
         Queue[] ListQueues();
 

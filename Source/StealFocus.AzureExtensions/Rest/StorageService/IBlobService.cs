@@ -2,7 +2,7 @@ namespace StealFocus.AzureExtensions.Rest.StorageService
 {
     using System.Collections.Generic;
 
-    public interface IBlobStorage
+    public interface IBlobService
     {
         BlobContainer[] ListContainers();
 

@@ -2,7 +2,7 @@ namespace StealFocus.AzureExtensions.Rest.StorageService
 {
     using System;
 
-    public interface ITableStorage
+    public interface ITableService
     {
         /// <summary>
         /// Lists the Table names found in the Storage Account.

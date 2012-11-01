@@ -68,9 +68,9 @@
     <Compile Include="QueueMessagesListTests.cs" />
     <Compile Include="QueueMessageTests.cs" />
     <Compile Include="Rest\StorageService\StorageApiRequestTests.cs" />
-    <Compile Include="Rest\StorageService\BlobStorageTests.cs" />
-    <Compile Include="Rest\StorageService\QueueStorageTests.cs" />
-    <Compile Include="Rest\StorageService\TableStorageTests.cs" />
+    <Compile Include="Rest\StorageService\BlobServiceTests.cs" />
+    <Compile Include="Rest\StorageService\QueueServiceTests.cs" />
+    <Compile Include="Rest\StorageService\TableServiceTests.cs" />
     <Compile Include="TableEntity.cs" />
     <Compile Include="TestAssembly.cs" />
   </ItemGroup>
