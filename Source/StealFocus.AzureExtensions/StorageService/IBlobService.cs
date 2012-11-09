@@ -31,5 +31,19 @@ namespace StealFocus.AzureExtensions.StorageService
         ContainerAcl GetContainerAcl(string containerName);
 
         bool SetContainerAcl(string containerName, ContainerAcl containerAcl);
+
+        string[] ListBlobs(string containerName);
+
+        bool PutBlob(string containerName, string blobName, string blobContent);
+
+        /// <summary>
+        /// Puts content in a blob.
+        /// </summary>
+        /// <param name="containerName">A <see cref="string"/>. The container name.</param>
+        /// <param name="blobName">A <see cref="string"/>. The blob name.</param>
+        /// <param name="pageSize">An <see cref="int"/>. Must be aligned to a 512-byte boundary.</param>
+        bool PutPageBlob(string containerName, string blobName, int pageSize);
+
+        string GetBlob(string containerName, string blobName);
     }
 }

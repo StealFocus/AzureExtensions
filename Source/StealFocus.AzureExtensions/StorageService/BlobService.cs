@@ -477,5 +477,151 @@
                 throw;
             }
         }
+
+        public string[] ListBlobs(string containerName)
+        {
+            List<string> blobs = new List<string>();
+            try
+            {
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "?restype=container&comp=list&include=snapshots&include=metadata");
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    Stream responseStream = httpWebResponse.GetResponseStream();
+                    if (responseStream == null)
+                    {
+                        throw new AzureExtensionsException("The response did not provide a stream as expected.");
+                    }
+
+                    using (StreamReader reader = new StreamReader(responseStream))
+                    {
+                        string result = reader.ReadToEnd();
+                        XElement enumerationResultsXml = XElement.Parse(result);
+                        XElement blobsElement = enumerationResultsXml.Element("Blobs");
+                        if (blobsElement == null)
+                        {
+                            throw new AzureExtensionsException("The 'EnumerationResults' element did not contain a child element 'Blobs'.");
+                        }
+
+                        foreach (XElement blob in blobsElement.Elements("Blob"))
+                        {
+                            XElement nameElement = blob.Element("Name");
+                            if (nameElement == null)
+                            {
+                                throw new AzureExtensionsException("The 'Blob' element did not contain a child element 'Name'.");
+                            }
+
+                            blobs.Add(nameElement.Value);
+                        }
+                    }
+                }
+
+                httpWebResponse.Close();
+                return blobs.ToArray();
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                throw;
+            }
+        }
+
+        public bool PutBlob(string containerName, string blobName, string blobContent)
+        {
+            try
+            {
+                SortedList<string, string> headers = new SortedList<string, string>();
+                headers.Add("x-ms-blob-type", "BlockBlob");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "/" + blobName, blobContent, headers);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.Conflict)
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        public bool PutPageBlob(string containerName, string blobName, int pageSize)
+        {
+            if ((pageSize % 512) != 0)
+            {
+                throw new ArgumentException("The page size must be aligned to a 512-byte boundary.", "pageSize");
+            }
+
+            try
+            {
+                SortedList<string, string> headers = new SortedList<string, string>();
+                headers.Add("x-ms-blob-type", "PageBlob");
+                headers.Add("x-ms-blob-content-length", pageSize.ToString(CultureInfo.CurrentCulture));
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "/" + blobName, null, headers);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.Conflict)
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        public string GetBlob(string containerName, string blobName)
+        {
+            try
+            {
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "/" + blobName);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream responseStream = httpWebResponse.GetResponseStream();
+                if (responseStream == null)
+                {
+                    throw new AzureExtensionsException("The response did not provide a stream as expected.");
+                }
+
+                string content;
+                using (StreamReader reader = new StreamReader(responseStream))
+                {
+                    content = reader.ReadToEnd();
+                }
+
+                httpWebResponse.Close();
+                return content;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.Conflict)
+                {
+                    return null;
+                }
+
+                throw;
+            }
+        }
     }
 }

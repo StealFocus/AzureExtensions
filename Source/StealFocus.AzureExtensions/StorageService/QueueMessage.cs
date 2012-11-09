@@ -2,7 +2,6 @@
 {
     using System;
     using System.Globalization;
-    using System.Text;
     using System.Xml;
     using System.Xml.Linq;
 
@@ -21,6 +20,7 @@
     ///     <MessageText>PFN0dWZmIC8+</MessageText>
     ///   </QueueMessage>
     /// </code>
+    /// Where the "MessageText" element content is Base 64 encoded.
     /// </remarks>
     public class QueueMessage
     {
@@ -47,7 +47,7 @@
 
             this.queueMessageElement = new XElement(
                 "QueueMessage",
-                new XElement("MessageText", EncodeMessageText(messageText)));
+                new XElement("MessageText", messageText.Base64Encode()));
         }
 
         public Guid MessageId
@@ -102,7 +102,8 @@
         {
             get
             {
-                return this.GetBase64("MessageText");
+                string encodedValue = this.GetQueueMessageElementChildElementValue("MessageText");
+                return encodedValue.Base64Decode();
             }
         }
 
@@ -121,13 +122,6 @@
             }
         }
 
-        private static string EncodeMessageText(string messageText)
-        {
-            byte[] messageBodyBytes = new UTF8Encoding().GetBytes(messageText);
-            string messageBodyBase64 = Convert.ToBase64String(messageBodyBytes);
-            return messageBodyBase64;
-        }
-
         private Guid GetMessageId()
         {
             string rawMessageId = this.GetQueueMessageElementChildElementValue("MessageId");
@@ -144,14 +138,6 @@
         {
             string rawDequeueCount = this.GetQueueMessageElementChildElementValue("DequeueCount");
             return int.Parse(rawDequeueCount, CultureInfo.CurrentCulture);
-        }
-
-        private string GetBase64(string childElementName)
-        {
-            string encodedValue = this.GetQueueMessageElementChildElementValue(childElementName);
-            byte[] fromBase64String = Convert.FromBase64String(encodedValue);
-            string unencodedValue = new UTF8Encoding().GetString(fromBase64String);
-            return unencodedValue;
         }
 
         private string GetQueueMessageElementChildElementValue(string elementName)

@@ -1,6 +1,6 @@
 ﻿namespace StealFocus.AzureExtensions.Tests.Configuration
 {
-    using StealFocus.AzureExtensions.Configuration;
+    using StealFocus.AzureExtensions.StorageService.Configuration;
 
     public static class StorageAccount
     {

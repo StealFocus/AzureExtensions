@@ -148,7 +148,7 @@
                     httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
                 {
                     string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "Windows Azure indicated the request was bad (HTTP Status Code {0}). Did your queue name contain invalid characters like capital letters, periods or spaces? The supplied queue name was '{1}'.", (int)httpWebResponse.StatusCode, queueName);
-                    throw new AzureExtensionsException(exceptionMessage);
+                    throw new AzureExtensionsException(exceptionMessage, ex);
                 }
 
                 throw;
