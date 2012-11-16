@@ -45,5 +45,13 @@ namespace StealFocus.AzureExtensions.StorageService
         bool PutPageBlob(string containerName, string blobName, int pageSize);
 
         string GetBlob(string containerName, string blobName);
+
+        bool PutBlobIfUnchanged(string containerName, string blobName, string content, string expectedETagValue);
+
+        SortedList<string, string> GetBlobMetadata(string containerName, string blobName);
+
+        SortedList<string, string> GetBlobProperties(string containerName, string blobName);
+
+        bool PutBlobAsMD5Hash(string container, string blob, string content);
     }
 }

@@ -25,3 +25,9 @@ To Do:
 Done
  - Argument validation.
  - Select HTTPS or not for endpoints.
+
+========================
+
+ Docs
+ Windows Azure Service Management REST API Reference - http://msdn.microsoft.com/en-gb/library/windowsazure/ee460799.aspx
+ Windows Azure Storage Services REST API Reference - http://msdn.microsoft.com/en-gb/library/windowsazure/dd179355.aspx

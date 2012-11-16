@@ -518,6 +518,7 @@
       <Term>goto</Term>       <!-- GoTo -->
       <Term>endpoint</Term>   <!-- Prevalent usage of both casings in System.Net and System.ServiceModel -->
       <Term>strongbox</Term>
+      <Term>etag</Term>
     </DiscreteExceptions>
   </Words>
   <Acronyms>

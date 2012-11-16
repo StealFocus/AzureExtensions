@@ -16,8 +16,8 @@
         /// <summary>
         /// Creates a new instance of <see cref="QueueService" />.
         /// </summary>
-        /// <param name="storageAccountName">A <see cref="string"/>. The Storage account name, for the Storage Emulator this is 'devstoreaccount1'.</param>
-        /// <param name="storageAccountKey">A <see cref="string"/>. The Storage account key, for the Storage Emulator this is 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=='.</param>
+        /// <param name="storageAccountName">A <see cref="string"/>. The Storage account name, for the Storage Emulator this is '<![CDATA[devstoreaccount1]]>'.</param>
+        /// <param name="storageAccountKey">A <see cref="string"/>. The Storage account key, for the Storage Emulator this is '<![CDATA[Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==]]>'.</param>
         public BlobService(string storageAccountName, string storageAccountKey)
         {
             if (string.IsNullOrEmpty(storageAccountName))
@@ -618,6 +618,133 @@
                     httpWebResponse.StatusCode == HttpStatusCode.Conflict)
                 {
                     return null;
+                }
+
+                throw;
+            }
+        }
+
+        public bool PutBlobIfUnchanged(string containerName, string blobName, string content, string expectedETagValue)
+        {
+            try
+            {
+                SortedList<string, string> headers = new SortedList<string, string>();
+                headers.Add("x-ms-blob-type", "BlockBlob");
+                headers.Add("If-Match", expectedETagValue);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", containerName + "/" + blobName, content, headers, expectedETagValue);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    (httpWebResponse.StatusCode == HttpStatusCode.Conflict || httpWebResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        public SortedList<string, string> GetBlobMetadata(string containerName, string blobName)
+        {
+            SortedList<string, string> metadata = new SortedList<string, string>();
+            try
+            {
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("HEAD", containerName + "/" + blobName + "?comp=metadata");
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    if (httpWebResponse.Headers != null)
+                    {
+                        for (int i = 0; i < httpWebResponse.Headers.Count; i++)
+                        {
+                            if (httpWebResponse.Headers.Keys[i].StartsWith("x-ms-meta-", StringComparison.OrdinalIgnoreCase))
+                            {
+                                metadata.Add(httpWebResponse.Headers.Keys[i], httpWebResponse.Headers[i]);
+                            }
+                        }
+                    }
+                }
+
+                return metadata;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                throw;
+            }
+        }
+
+        public SortedList<string, string> GetBlobProperties(string containerName, string blobName)
+        {
+            SortedList<string, string> propertiesList = new SortedList<string, string>();
+            try
+            {
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("HEAD", containerName + "/" + blobName);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                if ((int)httpWebResponse.StatusCode == 200)
+                {
+                    if (httpWebResponse.Headers != null)
+                    {
+                        for (int i = 0; i < httpWebResponse.Headers.Count; i++)
+                        {
+                            propertiesList.Add(httpWebResponse.Headers.Keys[i], httpWebResponse.Headers[i]);
+                        }
+                    }
+                }
+
+                return propertiesList;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+
+                throw;
+            }
+        }
+
+        public bool PutBlobAsMD5Hash(string container, string blob, string content)
+        {
+            try
+            {
+                string md5Hash = content.MD5Hash();
+                SortedList<string, string> headers = new SortedList<string, string>();
+                headers.Add("x-ms-blob-type", "BlockBlob");
+                headers.Add("Content-MD5", md5Hash);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("PUT", container + "/" + blob, content, headers, string.Empty, md5Hash);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                httpWebResponse.Close();
+                return true;
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)ex.Response;
+                if (ex.Status == WebExceptionStatus.ProtocolError &&
+                    ex.Response != null &&
+                    (httpWebResponse.StatusCode == HttpStatusCode.Conflict ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest))
+                {
+                    return false;
                 }
 
                 throw;

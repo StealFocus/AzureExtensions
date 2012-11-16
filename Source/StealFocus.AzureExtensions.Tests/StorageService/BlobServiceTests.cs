@@ -242,6 +242,121 @@
             Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
         }
 
+        [TestMethod]
+        public void IntegrationTestGetBlobMetadata()
+        {
+            IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobService.CreateContainer("test8");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Put a blob in the container.
+            bool putSuccess = blobService.PutBlob("test8", "blobName", "blobContent");
+            Assert.IsTrue(putSuccess, "The put was not successful.");
+
+            // Get blob metadata
+            SortedList<string, string> blobMetadata = blobService.GetBlobMetadata("test8", "blobName");
+            Assert.IsNotNull(blobMetadata, "The metadata was null when it was not expected to be.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobService.DeleteContainer("test8");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
+        [TestMethod]
+        public void IntegrationTestGetBlobProperties()
+        {
+            IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobService.CreateContainer("test9");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Put a blob in the container.
+            bool putSuccess = blobService.PutBlob("test9", "blobName", "blobContent");
+            Assert.IsTrue(putSuccess, "The put was not successful.");
+
+            // Get blob properties
+            SortedList<string, string> blobProperties = blobService.GetBlobProperties("test9", "blobName");
+            Assert.IsNotNull(blobProperties, "The metadata was null when it was not expected to be.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobService.DeleteContainer("test9");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
+        [TestMethod]
+        public void IntegrationTestPutBlobAndPutBlobIfUnchangedWithSameETag()
+        {
+            IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobService.CreateContainer("test9");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Put a blob in the container.
+            bool putSuccess = blobService.PutBlob("test9", "blobName", "blobContent");
+            Assert.IsTrue(putSuccess, "The put was not successful.");
+
+            // Get blob properties
+            SortedList<string, string> blobProperties = blobService.GetBlobProperties("test9", "blobName");
+            string etagValue = blobProperties["ETag"];
+
+            // Put blob if changed.
+            bool putBlobIfUnchangedSuccess = blobService.PutBlobIfUnchanged("test9", "blobName", "blah", etagValue);
+            Assert.IsTrue(putBlobIfUnchangedSuccess, "The blob was not indicated to have been updated when this was expected.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobService.DeleteContainer("test9");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
+        [TestMethod]
+        public void IntegrationTestPutBlobAndPutBlobIfUnchangedWithDifferentETag()
+        {
+            IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobService.CreateContainer("test10");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Put a blob in the container.
+            bool putSuccess = blobService.PutBlob("test10", "blobName", "blobContent");
+            Assert.IsTrue(putSuccess, "The put was not successful.");
+
+            // Get blob properties
+            SortedList<string, string> blobProperties = blobService.GetBlobProperties("test10", "blobName");
+            string etagValue = blobProperties["ETag"];
+            string differentETag = etagValue.Replace('A', 'B');
+
+            // Put blob if changed.
+            bool putBlobIfUnchangedSuccess = blobService.PutBlobIfUnchanged("test10", "blobName", "blah", differentETag);
+            Assert.IsFalse(putBlobIfUnchangedSuccess, "The blob was indicated to have been updated when this was not expected.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobService.DeleteContainer("test10");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
+        [TestMethod]
+        public void IntegrationTestPutBlobAsMD5Hash()
+        {
+            IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
+
+            // Create a container.
+            bool createSucess = blobService.CreateContainer("test10");
+            Assert.IsTrue(createSucess, "The container was not created as expected.");
+
+            // Put a blob in the container.
+            bool putSuccess = blobService.PutBlobAsMD5Hash("test10", "blobName", "blobContent");
+            Assert.IsTrue(putSuccess, "The put was not successful.");
+
+            // Now delete the container.
+            bool deleteSuccess = blobService.DeleteContainer("test10");
+            Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
+        }
+
         private static void CleanupContainers()
         {
             IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
