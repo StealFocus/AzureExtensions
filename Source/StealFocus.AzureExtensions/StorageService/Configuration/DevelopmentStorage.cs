@@ -6,10 +6,10 @@
     /// <remarks>
     /// These values will be the same on any machine so can just be hard coded.
     /// </remarks>
-    internal static class DevelopmentStorage
+    public static class DevelopmentStorage
     {
-        internal const string AccountName = "devstoreaccount1";
+        public const string AccountName = "devstoreaccount1";
 
-        internal const string AccountKey = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
+        public const string AccountKey = "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
     }
 }

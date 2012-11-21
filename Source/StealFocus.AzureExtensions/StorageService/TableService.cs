@@ -20,8 +20,8 @@
         /// <summary>
         /// Creates a new instance of <see cref="TableService" />.
         /// </summary>
-        /// <param name="storageAccountName">A <see cref="string"/>. The Storage account name, for the Storage Emulator this is 'devstoreaccount1'.</param>
-        /// <param name="storageAccountKey">A <see cref="string"/>. The Storage account key, for the Storage Emulator this is 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=='.</param>
+        /// <param name="storageAccountName">A <see cref="string"/>. The Storage account name, for the Storage Emulator this is '<![CDATA[devstoreaccount1]]>'.</param>
+        /// <param name="storageAccountKey">A <see cref="string"/>. The Storage account key, for the Storage Emulator this is '<![CDATA[Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==]]>'.</param>
         public TableService(string storageAccountName, string storageAccountKey)
         {
             if (string.IsNullOrEmpty(storageAccountName))

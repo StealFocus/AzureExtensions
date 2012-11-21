@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- IMPORTANT - you must import these targets for the build scripts to function. -->
+  <Import Project="..\packages\StealFocus.Build.1.0.21121.0\Scripts\StealFocus.Build.tasks" />
+
+  <PropertyGroup>
+    <CompanyName>StealFocus</CompanyName>
+    <Culture>en-GB</Culture>
+    <ProductName>AzureExtensions</ProductName>
+    <StrongNamePublicKey>00240000048000009400000006020000002400005253413100040000010001005b9e6ed06201024a6051c84c5cb65d86078e07e7aee8ec8334227ec45edcab291be648db1e2178f39008e6d0ce18a35a3cb0c42fd6639386de4e42f486b5507830bafa347f1d6452a1718fb5e3e71686d8d511a03ea1c04fe5b76b910a47ab9ee95d05657e616428cace679d495a08787db12091151f0f4349fff32a1d5909d7</StrongNamePublicKey>
+    <StrongNamePublicKeyToken>7ce888c75194ec0e</StrongNamePublicKeyToken>
+    <StyleCopVersion>4.7</StyleCopVersion>
+  </PropertyGroup>
+
+</Project>

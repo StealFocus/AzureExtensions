@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Notes.txt = Notes.txt
 		Settings.StyleCop = Settings.StyleCop
 		StealFocus.AzureExtensions.ruleset = StealFocus.AzureExtensions.ruleset
+		StealFocus.AzureExtensions.StrongNameKeyPair.snk = StealFocus.AzureExtensions.StrongNameKeyPair.snk
+		StealFocus.AzureExtensions.StrongNamePublicKey.snk = StealFocus.AzureExtensions.StrongNamePublicKey.snk
 		StealFocus.AzureExtensions.vsmdi = StealFocus.AzureExtensions.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
@@ -17,6 +19,30 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StealFocus.AzureExtensions.Tests", "StealFocus.AzureExtensions.Tests\StealFocus.AzureExtensions.Tests.csproj", "{35EC232D-84BB-4286-86E7-1A447A0C4A36}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A74FB3B2-C657-4683-BA43-B177FE10090E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9C72EE20-715E-40B9-94DC-F87412800210}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandFiles", "CommandFiles", "{6D5DA39A-70E5-459A-97EF-A24FE0C97C93}"
+	ProjectSection(SolutionItems) = preProject
+		CommandFiles\StealFocus.AzureExtensions.Build.cmd = CommandFiles\StealFocus.AzureExtensions.Build.cmd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{6967A709-827C-400C-B044-D5D0B1A630F2}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\StealFocus.AzureExtensions.Build.proj = Scripts\StealFocus.AzureExtensions.Build.proj
+		Scripts\StealFocus.AzureExtensions.Build.Project.Assembly.targets = Scripts\StealFocus.AzureExtensions.Build.Project.Assembly.targets
+		Scripts\StealFocus.AzureExtensions.Build.Project.CSharp.targets = Scripts\StealFocus.AzureExtensions.Build.Project.CSharp.targets
+		Scripts\StealFocus.AzureExtensions.Build.Project.targets = Scripts\StealFocus.AzureExtensions.Build.Project.targets
+		Scripts\StealFocus.AzureExtensions.Build.Project.VisualBasic.targets = Scripts\StealFocus.AzureExtensions.Build.Project.VisualBasic.targets
+		Scripts\StealFocus.AzureExtensions.CCNet.proj = Scripts\StealFocus.AzureExtensions.CCNet.proj
+		Scripts\StealFocus.AzureExtensions.targets = Scripts\StealFocus.AzureExtensions.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
