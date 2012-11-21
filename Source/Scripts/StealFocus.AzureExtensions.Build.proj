@@ -171,9 +171,9 @@
 
   <ItemGroup>
     <!-- Add "MSDeployAction" items as required. These will be deployed with MSDeploy. -->
-    <!--<MSDeployAction Include="ip-0A3AE60A-StealFocus.AzureExtensions.Web.UI">
+    <!--<MSDeployAction Include="IP-0A3A46D1-StealFocus.AzureExtensions.Web.UI">
       <RequiredBranchName>v1.0</RequiredBranchName>
-      <TargetServer>ip-0A3AE60A</TargetServer>
+      <TargetServer>IP-0A3A46D1</TargetServer>
       <IisWebApplicationName>Default Web Site/AzureExtensions</IisWebApplicationName>
       <IisWebApplicationPoolName>ASP.NET v4.0</IisWebApplicationPoolName>
       <IisVirtualDirectoryPhysicalPath>D:\WebSites\DefaultWebSite\AzureExtensions</IisVirtualDirectoryPhysicalPath>
@@ -339,7 +339,7 @@
     <Copy
       Condition=" '$(IsDesktopBuild)'!='true' And '$(BranchName)'=='Master' "
       SourceFiles="@(NuGetPackages)"
-      DestinationFolder="\\IP-0A3AE60A\NuGetPackages\" />
+      DestinationFolder="\\IP-0A3A46D1\NuGetPackages\" />
     <!-- Push non-Trunk builds to NuGet.org feed -->
     <Exec
       Condition=" '$(IsDesktopBuild)'!='true' And '$(BranchName)'!='Master' "
