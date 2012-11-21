@@ -8,7 +8,7 @@
     using StealFocus.AzureExtensions.StorageService;
     using StealFocus.AzureExtensions.Tests.Configuration;
 
-    [TestClass]
+    [TestClass, Ignore]
     public class TableServiceTests
     {
         /// <remarks>
