@@ -44,6 +44,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{6967
 		Scripts\StealFocus.AzureExtensions.targets = Scripts\StealFocus.AzureExtensions.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Artefacts", "Artefacts", "{D2DAD015-4825-44A1-A7BF-653592B5C171}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{E72A8B9B-88E1-43BB-96E6-4ECAB2D8C860}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StealFocus.AzureExtensions", "StealFocus.AzureExtensions", "{132EE89A-C651-43DC-A990-163CEFECD615}"
+	ProjectSection(SolutionItems) = preProject
+		Artefacts\NuGet\StealFocus.AzureExtensions\StealFocus.AzureExtensions.nuspec = Artefacts\NuGet\StealFocus.AzureExtensions\StealFocus.AzureExtensions.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = StealFocus.AzureExtensions.vsmdi
@@ -67,5 +76,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{35EC232D-84BB-4286-86E7-1A447A0C4A36} = {A74FB3B2-C657-4683-BA43-B177FE10090E}
+		{E72A8B9B-88E1-43BB-96E6-4ECAB2D8C860} = {D2DAD015-4825-44A1-A7BF-653592B5C171}
+		{132EE89A-C651-43DC-A990-163CEFECD615} = {E72A8B9B-88E1-43BB-96E6-4ECAB2D8C860}
 	EndGlobalSection
 EndGlobal
