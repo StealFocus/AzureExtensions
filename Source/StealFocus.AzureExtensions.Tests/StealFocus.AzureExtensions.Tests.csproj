@@ -62,6 +62,9 @@
   <ItemGroup>
     <Compile Include="Configuration\StorageAccount.cs" />
     <Compile Include="Configuration\TestThrottling.cs" />
+    <Compile Include="HostedService\DeploymentTests.cs" />
+    <Compile Include="HostedService\OperationTests.cs" />
+    <Compile Include="Configuration\WindowsAzureAccount.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

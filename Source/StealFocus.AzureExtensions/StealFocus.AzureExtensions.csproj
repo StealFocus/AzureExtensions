@@ -53,6 +53,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureExtensionsException.cs" />
+    <Compile Include="AzureExtensionsOperationException.cs" />
+    <Compile Include="BooleanExtensions.cs" />
+    <Compile Include="HostedService\Deployment.cs" />
+    <Compile Include="HostedService\Configuration\DeploymentSlot.cs" />
+    <Compile Include="GuidExtensions.cs" />
+    <Compile Include="HostedService\IDeployment.cs" />
+    <Compile Include="HostedService\IOperation.cs" />
+    <Compile Include="HostedService\Net\WebRequestExtensions.cs" />
+    <Compile Include="HostedService\Net\WebResponseExtensions.cs" />
+    <Compile Include="HostedService\Operation.cs" />
+    <Compile Include="HostedService\OperationResult.cs" />
+    <Compile Include="HostedService\OperationStatus.cs" />
+    <Compile Include="Configuration\RequestContentType.cs" />
+    <Compile Include="Configuration\RequestHeaderName.cs" />
+    <Compile Include="Configuration\RequestMethod.cs" />
+    <Compile Include="HostedService\Configuration\RequestMSVersion.cs" />
+    <Compile Include="HostedService\Configuration\ResponseHeaderName.cs" />
+    <Compile Include="HostedService\Configuration\XmlNamespace.cs" />
+    <Compile Include="Security\Cryptography\CertificateStore.cs" />
+    <Compile Include="StorageService\Blob.cs" />
     <Compile Include="StorageService\BlobContainer.cs" />
     <Compile Include="StorageService\Configuration\DevelopmentStorage.cs" />
     <Compile Include="StorageService\ContainerAcl.cs" />
@@ -89,9 +109,7 @@
       <Link>StealFocus.AzureExtensions.StrongNamePublicKey.snk</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HostedService\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Scripts\StealFocus.AzureExtensions.Build.Project.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

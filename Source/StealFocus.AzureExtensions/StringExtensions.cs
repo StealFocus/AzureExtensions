@@ -1,10 +1,4 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="StringExtensions.cs" company="Beazley">
-// TODO: Update copyright text.
-// </copyright>
-// -----------------------------------------------------------------------
-
-namespace StealFocus.AzureExtensions
+﻿namespace StealFocus.AzureExtensions
 {
     using System;
     using System.Security.Cryptography;
@@ -12,6 +6,11 @@ namespace StealFocus.AzureExtensions
 
     public static class StringExtensions
     {
+        /// <summary>
+        /// Converts a UTF-8 string to a Base-64 version of the string.
+        /// </summary>
+        /// <param name="text">The string to convert to Base-64.</param>
+        /// <returns>The Base-64 converted string.</returns>
         public static string Base64Encode(this string text)
         {
             byte[] bytes = new UTF8Encoding().GetBytes(text);
@@ -19,6 +18,11 @@ namespace StealFocus.AzureExtensions
             return base64EncodedText;
         }
 
+        /// <summary>
+        /// Converts a Base-64 encoded string to UTF-8.
+        /// </summary>
+        /// <param name="base64EncodedText">The string to convert from Base-64.</param>
+        /// <returns>The converted UTF-8 string.</returns>
         public static string Base64Decode(this string base64EncodedText)
         {
             byte[] bytes = Convert.FromBase64String(base64EncodedText);

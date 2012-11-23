@@ -9,6 +9,7 @@
     using System.Text;
     using System.Xml.Linq;
 
+    using StealFocus.AzureExtensions.Configuration;
     using StealFocus.AzureExtensions.StorageService.Endpoints;
 
     public class TableService : ITableService
@@ -43,7 +44,7 @@
             List<Table> tables = new List<Table>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "Tables");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, "Tables");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -185,7 +186,7 @@
                     "  </content> " +
                     "</entry>";
                 string requestBody = string.Format(CultureInfo.CurrentCulture, RequestBodyFormat, now, tableName);
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", "Tables", requestBody);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Post, "Tables", requestBody);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -223,7 +224,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", "Tables('" + tableName + "')");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Delete, "Tables('" + tableName + "')");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -307,7 +308,7 @@
                     "  </content> " +
                     "</entry>";
                 string requestBody = string.Format(CultureInfo.CurrentCulture, RequestBodyFormat, now, properties);
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", tableName, requestBody);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Post, tableName, requestBody);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -359,7 +360,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageServiceRequest.Create("GET", resource, null, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create(RequestMethod.Get, resource, null, headers);
                 request.Accept = "application/atom+xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -421,7 +422,7 @@
             try
             {
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "()?$filter=" + Uri.EscapeDataString(filter));
-                HttpWebRequest request = this.storageServiceRequest.Create("GET", resource);
+                HttpWebRequest request = this.storageServiceRequest.Create(RequestMethod.Get, resource);
                 request.Accept = "application/atom+xml,application/xml";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -669,7 +670,7 @@
                 string resource = string.Format(CultureInfo.CurrentCulture, tableName + "(PartitionKey='{0}',RowKey='{1}')", partitionKey, rowKey);
                 SortedList<string, string> headers = new SortedList<string, string>();
                 headers.Add("If-Match", "*");
-                HttpWebRequest request = this.storageServiceRequest.Create("DELETE", resource, null, headers);
+                HttpWebRequest request = this.storageServiceRequest.Create(RequestMethod.Delete, resource, null, headers);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 response.Close();
                 return true;

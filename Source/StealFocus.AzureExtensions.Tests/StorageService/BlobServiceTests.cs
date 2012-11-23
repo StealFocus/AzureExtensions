@@ -345,15 +345,15 @@
             IBlobService blobService = new BlobService(StorageAccount.Name, StorageAccount.Key);
 
             // Create a container.
-            bool createSucess = blobService.CreateContainer("test10");
+            bool createSucess = blobService.CreateContainer("test11");
             Assert.IsTrue(createSucess, "The container was not created as expected.");
 
             // Put a blob in the container.
-            bool putSuccess = blobService.PutBlobAsMD5Hash("test10", "blobName", "blobContent");
+            bool putSuccess = blobService.PutBlobAsMD5Hash("test11", "blobName", "blobContent");
             Assert.IsTrue(putSuccess, "The put was not successful.");
 
             // Now delete the container.
-            bool deleteSuccess = blobService.DeleteContainer("test10");
+            bool deleteSuccess = blobService.DeleteContainer("test11");
             Assert.IsTrue(deleteSuccess, "The container was not deleted as expected.");
         }
 

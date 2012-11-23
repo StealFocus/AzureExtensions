@@ -11,6 +11,7 @@
     using System.Threading;
     using System.Web;
 
+    using StealFocus.AzureExtensions.Configuration;
     using StealFocus.AzureExtensions.StorageService.Configuration;
     using StealFocus.AzureExtensions.StorageService.Endpoints;
 
@@ -50,7 +51,7 @@
             request.Method = method;
             request.ContentLength = 0;
             request.Headers.Add("x-ms-date", now.ToString(DateFormat.Rfc1123Pattern, CultureInfo.InvariantCulture));
-            request.Headers.Add("x-ms-version", "2009-09-19");
+            request.Headers.Add(RequestHeaderName.MSVersion, "2009-09-19");
             if (this.storageServiceEndpoint.IsTableStorage)
             {
                 request.ContentType = "application/atom+xml";
@@ -137,7 +138,7 @@
                     CultureInfo.CurrentCulture,
                     "{0}\n\n\n{1}\n{5}\n\n\n\n{2}\n\n\n\n{3}{4}",
                     method,
-                    (method == "GET" || method == "HEAD") ? string.Empty : request.ContentLength.ToString(CultureInfo.CurrentCulture),
+                    (method == RequestMethod.Get || method == "HEAD") ? string.Empty : request.ContentLength.ToString(CultureInfo.CurrentCulture),
                     ifMatch,
                     GetCanonicalizedHeaders(request),
                     GetCanonicalizedResource(request.RequestUri, storageAccountName, false),

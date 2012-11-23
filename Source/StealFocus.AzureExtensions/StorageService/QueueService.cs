@@ -7,6 +7,7 @@
     using System.Net;
     using System.Xml.Linq;
 
+    using StealFocus.AzureExtensions.Configuration;
     using StealFocus.AzureExtensions.StorageService.Endpoints;
 
     public class QueueService : IQueueService
@@ -38,7 +39,7 @@
             List<Queue> queues = new List<Queue>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "?comp=list");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, "?comp=list");
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -174,7 +175,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Delete, queueName);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -320,7 +321,7 @@
             try
             {
                 string message = new QueueMessage(messageBody).GetRawXml();
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("POST", queueName + "/messages", message);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Post, queueName + "/messages", message);
                 HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                 response.Close();
                 return true;
@@ -358,7 +359,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", queueName + "/messages?peekonly=true");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, queueName + "/messages?peekonly=true");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 if (responseStream == null)
@@ -415,7 +416,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", queueName + "/messages");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, queueName + "/messages");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 if (responseStream == null)
@@ -472,7 +473,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName + "/messages");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Delete, queueName + "/messages");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -520,7 +521,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", queueName + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Delete, queueName + "/messages/" + messageId + "?popreceipt=" + Uri.EscapeDataString(popReceipt));
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;

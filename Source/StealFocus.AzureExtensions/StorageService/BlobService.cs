@@ -7,6 +7,7 @@
     using System.Net;
     using System.Xml.Linq;
 
+    using StealFocus.AzureExtensions.Configuration;
     using StealFocus.AzureExtensions.StorageService.Endpoints;
 
     public class BlobService : IBlobService
@@ -38,7 +39,7 @@
             List<BlobContainer> blobContainers = new List<BlobContainer>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", "?comp=list");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, "?comp=list");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
@@ -192,7 +193,7 @@
 
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("DELETE", containerName + "?restype=container");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Delete, containerName + "?restype=container");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 httpWebResponse.Close();
                 return true;
@@ -364,7 +365,7 @@
             string signedIdentifiersXml = null;
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "?restype=container&comp=acl");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, containerName + "?restype=container&comp=acl");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
@@ -483,7 +484,7 @@
             List<string> blobs = new List<string>();
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "?restype=container&comp=list&include=snapshots&include=metadata");
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, containerName + "?restype=container&comp=list&include=snapshots&include=metadata");
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
@@ -593,7 +594,7 @@
         {
             try
             {
-                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create("GET", containerName + "/" + blobName);
+                HttpWebRequest httpWebRequest = this.storageServiceRequest.Create(RequestMethod.Get, containerName + "/" + blobName);
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 Stream responseStream = httpWebResponse.GetResponseStream();
                 if (responseStream == null)
