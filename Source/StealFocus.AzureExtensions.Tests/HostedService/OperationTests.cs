@@ -22,7 +22,8 @@
                 WindowsAzureAccount.CertificateThumbprint, 
                 "BeazleyTasks-WEuro-Sys", 
                 DeploymentSlot.Production);
-            OperationResult operationResult = new Operation().StatusCheck(
+            IOperation operation = new Operation();
+            OperationResult operationResult = operation.StatusCheck(
                 WindowsAzureAccount.SubscriptionId, 
                 WindowsAzureAccount.CertificateThumbprint, 
                 deleteRequestId);
@@ -45,13 +46,14 @@
                 "ServiceConfiguration.Cloud-SysTest.cscfg",
                 true,
                 true);
-            OperationResult operationResult1 = new Operation().StatusCheck(
+            IOperation operation = new Operation();
+            OperationResult operationResult1 = operation.StatusCheck(
                 WindowsAzureAccount.SubscriptionId, 
                 WindowsAzureAccount.CertificateThumbprint,
                 createRequestId);
             Assert.IsNotNull(operationResult1);
             System.Threading.Thread.Sleep(5000);
-            OperationResult operationResult2 = new Operation().StatusCheck(
+            OperationResult operationResult2 = operation.StatusCheck(
                 WindowsAzureAccount.SubscriptionId, 
                 WindowsAzureAccount.CertificateThumbprint,
                 createRequestId);
