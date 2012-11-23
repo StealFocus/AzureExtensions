@@ -4,6 +4,10 @@
 
     public interface IDeployment
     {
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
         bool CheckExists(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot);
 
         /// <param name="subscriptionId">The Subscription ID.</param>
