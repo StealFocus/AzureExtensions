@@ -160,6 +160,125 @@
             return requestId;
         }
 
+        public XDocument GetConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
+        {
+            XDocument deploymentXml = Get(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+            XNamespace mwans = XmlNamespace.MicrosoftWindowsAzure;
+            XElement deploymentElement = deploymentXml.Root;
+            if (deploymentElement == null)
+            {
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "The deployment XML returned from the management API did not contain a root element (expected to be named 'Deployment').");
+                throw new AzureExtensionsException(exceptionMessage);
+            }
+
+            XElement configurationElement = deploymentElement.Element(mwans + "Configuration");
+            if (configurationElement == null)
+            {
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "The Deployment element did not have a child element named 'Configuration' as expected.");
+                throw new AzureExtensionsException(exceptionMessage);
+            }
+
+            string decodedConfigurationXml = configurationElement.Value.Base64Decode();
+            return XDocument.Parse(decodedConfigurationXml);
+        }
+
+        public string ChangeConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, XDocument configuration, bool treatWarningsAsError, string mode)
+        {
+            HttpWebRequest httpWebRequest = GetRequestForChangeConfiguration(subscriptionId, certificateThumbprint, serviceName, deploymentSlot, configuration, treatWarningsAsError, mode);
+            HttpWebResponse httpWebResponse = null;
+            string requestId;
+            try
+            {
+                httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponseThrottled();
+                if (httpWebResponse.StatusCode != HttpStatusCode.Accepted)
+                {
+                    string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "The HTTP Status Code returned in the response was '{0}', expected was '{1}'.", httpWebResponse.StatusCode, HttpStatusCode.Accepted);
+                    throw new AzureExtensionsException(exceptionMessage);
+                }
+
+                requestId = httpWebResponse.Headers[ResponseHeaderName.MSRequestId];
+            }
+            catch (WebException e)
+            {
+                if (e.Response != null)
+                {
+                    httpWebResponse = (HttpWebResponse)e.Response;
+                    AzureExtensionsOperationException azureExtensionsOperationException = new AzureExtensionsOperationException();
+                    azureExtensionsOperationException.ResponseBody = httpWebResponse.GetResponseBody();
+                    throw azureExtensionsOperationException;
+                }
+
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "There was en error creating deployment for service '{0}' in deployment slot '{1}'.", serviceName, deploymentSlot);
+                throw new AzureExtensionsException(exceptionMessage, e);
+            }
+            finally
+            {
+                httpWebRequest.Abort();
+                if (httpWebResponse != null)
+                {
+                    httpWebResponse.Close();
+                }
+            }
+
+            return requestId;
+        }
+
+        private static XDocument Get(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
+        {
+            HttpWebRequest httpWebRequest = GetRequestForGet(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+            HttpWebResponse httpWebResponse = null;
+            try
+            {
+                httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponseThrottled();
+                Stream responseStream = httpWebResponse.GetResponseStream();
+                if (responseStream == null)
+                {
+                    throw new AzureExtensionsException("The response did not provide a stream as expected.");
+                }
+
+                string responseBody;
+                using (StreamReader reader = new StreamReader(responseStream))
+                {
+                    responseBody = reader.ReadToEnd();
+                }
+
+                return XDocument.Parse(responseBody);
+            }
+            catch (WebException e)
+            {
+                if (e.Response != null)
+                {
+                    httpWebResponse = (HttpWebResponse)e.Response;
+                    if (httpWebResponse.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        string notFoundExceptionMessage = string.Format(
+                        CultureInfo.CurrentCulture,
+                        "The deployment for Subscription ID '{0}', Service Name '{1}' and Deployment '{2}' did not exist.",
+                        subscriptionId,
+                        serviceName,
+                        deploymentSlot);
+                        throw new AzureExtensionsException(notFoundExceptionMessage, e);
+                    }
+                }
+
+                string exceptionMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "There was a problem getting the deployment for Subscription ID '{0}', Service Name '{1}' and Deployment '{2}'.",
+                    subscriptionId,
+                    serviceName,
+                    deploymentSlot);
+                throw new AzureExtensionsException(exceptionMessage, e);
+            }
+            finally
+            {
+                httpWebRequest.Abort();
+                if (httpWebResponse != null)
+                {
+                    httpWebResponse.Close();
+                }
+            }
+        }
+
         private static HttpWebRequest GetRequestForDelete(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
         {
             string deleteDeploymentUrl = GetDeleteDeploymentUrl(subscriptionId.AzureRestFormat(), serviceName, deploymentSlot);
@@ -218,6 +337,38 @@
             return httpWebRequest;
         }
 
+        private static HttpWebRequest GetRequestForChangeConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, XDocument configuration, bool treatWarningsAsError, string mode)
+        {
+            string deleteDeploymentUrl = GetChangeConfigurationUrl(subscriptionId.AzureRestFormat(), serviceName, deploymentSlot);
+            Uri requestUri = new Uri(deleteDeploymentUrl);
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(requestUri);
+            httpWebRequest.Headers.Add(RequestHeaderName.MSVersion, RequestMSVersion.December2011);
+            httpWebRequest.Method = RequestMethod.Post;
+            httpWebRequest.ContentType = RequestContentType.ApplicationXml;
+            X509Certificate2 certificate = CertificateStore.GetCertificateFromCurrentUserStore(certificateThumbprint);
+            httpWebRequest.ClientCertificates.Add(certificate);
+            XDocument requestBody = GetChangeConfigurationRequestBody(configuration, treatWarningsAsError, mode);
+            Stream requestStream = null;
+            try
+            {
+                requestStream = httpWebRequest.GetRequestStream();
+                using (StreamWriter streamWriter = new StreamWriter(requestStream, Encoding.UTF8))
+                {
+                    requestStream = null;
+                    requestBody.Save(streamWriter, SaveOptions.DisableFormatting);
+                }
+            }
+            finally
+            {
+                if (requestStream != null)
+                {
+                    requestStream.Dispose();
+                }
+            }
+
+            return httpWebRequest;
+        }
+
         private static string GetDeleteDeploymentUrl(string subscriptionId, string serviceName, string deploymentSlot)
         {
             return GetDeploymentUrl(subscriptionId, serviceName, deploymentSlot);
@@ -237,6 +388,12 @@
         {
             // https://management.core.windows.net/<subscriptionId>/services/hostedservices/<serviceName>/deploymentslots/<deploymentSlot>
             return string.Format(CultureInfo.CurrentCulture, "https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/{2}", subscriptionId, serviceName, deploymentSlot);
+        }
+
+        private static string GetChangeConfigurationUrl(string subscriptionId, string serviceName, string deploymentSlot)
+        {
+            // https://management.core.windows.net/<subscriptionId>/services/hostedservices/<serviceName>/deploymentslots/<deploymentSlot>/?comp=config
+            return string.Format(CultureInfo.CurrentCulture, "https://management.core.windows.net/{0}/services/hostedservices/{1}/deploymentslots/{2}/?comp=config", subscriptionId, serviceName, deploymentSlot);
         }
 
         private static XDocument GetCreateDeploymentRequestBody(string name, Uri packageUrl, string label, string configurationFilePath, bool startDeployment, bool treatWarningsAsError)
@@ -263,6 +420,33 @@
                     new XElement(windowsAzureNamespace + "Configuration", GetConfigurationFileAsSingleString(configurationFilePath).Base64Encode()),
                     new XElement(windowsAzureNamespace + "StartDeployment", startDeployment.AzureRestFormat()),
                     new XElement(windowsAzureNamespace + "TreatWarningsAsError", treatWarningsAsError.AzureRestFormat())));
+            return requestBody;
+        }
+
+        private static XDocument GetChangeConfigurationRequestBody(XDocument configuration, bool treatWarningsAsError, string mode)
+        {
+            /*
+             *  <?xml version="1.0" encoding="utf-8"?>
+             *  <ChangeConfiguration xmlns="http://schemas.microsoft.com/windowsazure">
+             *     <Configuration>base-64-encoded-configuration-file</Configuration>
+             *     <TreatWarningsAsError>true|false</TreatWarningsAsError>
+             *     <Mode>Auto|Manual</Mode>
+             *     <ExtendedProperties>
+             *        <ExtendedProperty>
+             *           <Name>property-name</Name>
+             *           <Value>property-value</Value>
+             *        </ExtendedProperty>
+             *     </ExtendedProperties>
+             *  </ChangeConfiguration>
+             */
+            XNamespace windowsAzureNamespace = XmlNamespace.MicrosoftWindowsAzure;
+            XDocument requestBody = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "no"),
+                new XElement(
+                    windowsAzureNamespace + "ChangeConfiguration",
+                    new XElement(windowsAzureNamespace + "Configuration", configuration.ToString(SaveOptions.DisableFormatting).Base64Encode()),
+                    new XElement(windowsAzureNamespace + "TreatWarningsAsError", treatWarningsAsError.AzureRestFormat()),
+                    new XElement(windowsAzureNamespace + "Mode", mode)));
             return requestBody;
         }
 

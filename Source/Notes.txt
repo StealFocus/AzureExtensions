@@ -4,6 +4,14 @@ tasklist /fi "pid eq ????"
 
 ========================
 
+Auto-scale
+https://www.windowsazure.com/en-us/develop/net/how-to-guides/autoscaling/
+http://msdn.microsoft.com/en-us/library/hh680945(v=pandp.50).aspx
+http://msdn.microsoft.com/en-us/library/gg433048.aspx
+http://msdn.microsoft.com/en-us/library/ee460799.aspx
+
+========================
+
 To Do:
  - Fold XML logic into objects and not hard coded strings.
  - Push formatting of "filter" parameters into objects.

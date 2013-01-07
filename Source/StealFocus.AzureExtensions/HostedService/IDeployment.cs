@@ -1,6 +1,7 @@
 ﻿namespace StealFocus.AzureExtensions.HostedService
 {
     using System;
+    using System.Xml.Linq;
 
     public interface IDeployment
     {
@@ -27,5 +28,20 @@
         /// <param name="startDeployment">Whether to start after deployment.</param>
         /// <param name="treatWarningsAsError">Whether to treat warnings as errors.</param>
         string CreateRequest(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, string deploymentName, Uri packageUrl, string label, string configurationFilePath, bool startDeployment, bool treatWarningsAsError);
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        XDocument GetConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot);
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="configuration">The XML representing the new configuration i.e. the contents of a <![CDATA[.cscfg]]> file.</param>
+        /// <param name="treatWarningsAsError">A <see cref="bool"/>.</param>
+        /// <param name="mode">Either "Auto" or "Manual".</param>
+        string ChangeConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, XDocument configuration, bool treatWarningsAsError, string mode);
     }
 }
