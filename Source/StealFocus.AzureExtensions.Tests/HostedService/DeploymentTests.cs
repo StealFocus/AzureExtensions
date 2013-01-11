@@ -1,6 +1,7 @@
 ﻿namespace StealFocus.AzureExtensions.Tests.HostedService
 {
     using System;
+    using System.Xml.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,6 +53,43 @@
                 "ServiceConfiguration.Cloud-SysTest.cscfg", 
                 true, 
                 true);
+        }
+
+        [TestMethod]
+        public void TestGetConfigurationAndChangeConfiguration()
+        {
+            IDeployment deployment = new Deployment();
+            XDocument configurationXml = deployment.GetConfiguration(
+                WindowsAzureAccount.SubscriptionId,
+                WindowsAzureAccount.CertificateThumbprint,
+                "BeazleyMarketingProfiles-WEuro-Sys",
+                DeploymentSlot.Production);
+            Assert.IsNotNull(configurationXml);
+
+            string requestId = deployment.ChangeConfiguration(
+                WindowsAzureAccount.SubscriptionId,
+                WindowsAzureAccount.CertificateThumbprint,
+                "BeazleyMarketingProfiles-WEuro-Sys",
+                DeploymentSlot.Production,
+                configurationXml,
+                true,
+                "Auto");
+            Assert.IsNotNull(requestId);
+        }
+
+        [TestMethod]
+        public void TestHorizontallyScale()
+        {
+            IDeployment deployment = new Deployment();
+            string requestId = deployment.HorizontallyScale(
+                WindowsAzureAccount.SubscriptionId,
+                WindowsAzureAccount.CertificateThumbprint,
+                "BeazleyMarketingProfiles-WEuro-Sys",
+                DeploymentSlot.Production,
+                new[] { new HorizontalScale { InstanceCount = 2, RoleName = "Beazley.Marketing.Profiles.Endpoint" } }, 
+                true,
+                "Auto");
+            Assert.IsNotNull(requestId);
         }
     }
 }

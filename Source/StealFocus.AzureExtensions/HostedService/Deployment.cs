@@ -3,6 +3,7 @@
     using System;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
@@ -221,6 +222,41 @@
             }
 
             return requestId;
+        }
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="horizontalScales">Role names and required instance counts.</param>
+        /// <param name="treatWarningsAsError">Whether to treat any warnings as errors.</param>
+        /// <param name="mode">Auto|Manual</param>
+        /// <returns>The ID of the request to update the configuration of the deployment. Null if no update was made (if the deployment was already scaled to the specification).</returns>
+        public string HorizontallyScale(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, HorizontalScale[] horizontalScales, bool treatWarningsAsError, string mode)
+        {
+            if (horizontalScales == null)
+            {
+                throw new ArgumentNullException("horizontalScales");
+            }
+
+            XDocument configuration = this.GetConfiguration(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+            bool configurationHasBeenUpdated = false;
+            foreach (HorizontalScale horizontalScale in horizontalScales)
+            {
+                if (ConfigurationShouldBeUpdated(configuration, horizontalScale.RoleName, horizontalScale.InstanceCount))
+                {
+                    configuration = UpdateConfiguration(configuration, horizontalScale.RoleName, horizontalScale.InstanceCount);
+                    configurationHasBeenUpdated = true;
+                }
+            }
+
+            if (configurationHasBeenUpdated)
+            {
+                string changeConfigurationRequestId = this.ChangeConfiguration(subscriptionId, certificateThumbprint, serviceName, deploymentSlot, configuration, treatWarningsAsError, mode);
+                return changeConfigurationRequestId;
+            }
+
+            return null;
         }
 
         private static XDocument Get(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
@@ -453,6 +489,59 @@
         private static string GetConfigurationFileAsSingleString(string configurationFilePath)
         {
             return string.Join(string.Empty, File.ReadAllLines(configurationFilePath));
+        }
+
+        private static XElement GetInstancesElement(XDocument configuration, string roleName)
+        {
+            /*
+            <ServiceConfiguration
+             serviceName=""
+             osFamily="1"
+             osVersion="*"
+             xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration">
+              <Role name="[roleName]">
+                <ConfigurationSettings>
+                  <Setting ... />
+                </ConfigurationSettings>
+                <Instances count="1" />
+                <Certificates />
+              </Role>
+            </ServiceConfiguration>
+             */
+            XNamespace ns = XmlNamespace.ServiceHosting200810ServiceConfiguration;
+            XElement configurationRootElement = configuration.Root;
+            if (configurationRootElement == null)
+            {
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "The configuration XML returned from the management API did not contain a root element.");
+                throw new AzureExtensionsException(exceptionMessage);
+            }
+
+            XElement instancesElement = (from role 
+                                         in configurationRootElement.Elements(ns + "Role")
+                                         where role.Attribute("name").Value == roleName
+                                         select role)
+                                         .Single()
+                                         .Element(ns + "Instances");
+            if (instancesElement == null)
+            {
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "The configuration XML returned from the management API did not contain a 'Role' element matching name '{0}'.", roleName);
+                throw new AzureExtensionsException(exceptionMessage);
+            }
+
+            return instancesElement;
+        }
+
+        private static bool ConfigurationShouldBeUpdated(XDocument configuration, string roleName, int requiredInstanceCount)
+        {
+            XElement instancesElement = GetInstancesElement(configuration, roleName);
+            return requiredInstanceCount.ToString(CultureInfo.CurrentCulture) != instancesElement.Attribute("count").Value;
+        }
+
+        private static XDocument UpdateConfiguration(XDocument configuration, string roleName, int newInstanceCount)
+        {
+            XElement instancesElement = GetInstancesElement(configuration, roleName);
+            instancesElement.Attribute("count").SetValue(newInstanceCount);
+            return configuration;
         }
     }
 }
