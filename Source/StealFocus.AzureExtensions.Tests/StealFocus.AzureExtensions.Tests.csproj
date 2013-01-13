@@ -76,6 +76,7 @@
     <Compile Include="StorageService\QueueServiceTests.cs" />
     <Compile Include="StorageService\TableServiceTests.cs" />
     <Compile Include="StorageService\TestTableEntity.cs" />
+    <Compile Include="SubscriptionTests.cs" />
     <Compile Include="TestAssembly.cs" />
   </ItemGroup>
   <ItemGroup>
