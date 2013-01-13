@@ -1,4 +1,4 @@
-﻿namespace StealFocus.AzureExtensions.HostedService.Configuration
+﻿namespace StealFocus.AzureExtensions.Configuration
 {
     internal static class XmlNamespace
     {

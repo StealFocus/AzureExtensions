@@ -1,4 +1,4 @@
-﻿namespace StealFocus.AzureExtensions.HostedService.Net
+﻿namespace StealFocus.AzureExtensions.Net
 {
     using System;
     using System.IO;

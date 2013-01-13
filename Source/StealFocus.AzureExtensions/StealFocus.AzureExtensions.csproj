@@ -55,14 +55,15 @@
     <Compile Include="AzureExtensionsException.cs" />
     <Compile Include="AzureExtensionsOperationException.cs" />
     <Compile Include="BooleanExtensions.cs" />
+    <Compile Include="Configuration\XmlNamespace.cs" />
     <Compile Include="HostedService\Deployment.cs" />
     <Compile Include="HostedService\Configuration\DeploymentSlot.cs" />
     <Compile Include="GuidExtensions.cs" />
     <Compile Include="HostedService\HorizontalScale.cs" />
     <Compile Include="HostedService\IDeployment.cs" />
     <Compile Include="HostedService\IOperation.cs" />
-    <Compile Include="HostedService\Net\WebRequestExtensions.cs" />
-    <Compile Include="HostedService\Net\WebResponseExtensions.cs" />
+    <Compile Include="Net\WebRequestExtensions.cs" />
+    <Compile Include="Net\WebResponseExtensions.cs" />
     <Compile Include="HostedService\Operation.cs" />
     <Compile Include="HostedService\OperationResult.cs" />
     <Compile Include="HostedService\OperationStatus.cs" />
@@ -71,7 +72,6 @@
     <Compile Include="Configuration\RequestMethod.cs" />
     <Compile Include="HostedService\Configuration\RequestMSVersion.cs" />
     <Compile Include="HostedService\Configuration\ResponseHeaderName.cs" />
-    <Compile Include="HostedService\Configuration\XmlNamespace.cs" />
     <Compile Include="ISubscription.cs" />
     <Compile Include="Security\Cryptography\CertificateStore.cs" />
     <Compile Include="StorageService\Blob.cs" />

@@ -11,7 +11,7 @@
 
     using StealFocus.AzureExtensions.Configuration;
     using StealFocus.AzureExtensions.HostedService.Configuration;
-    using StealFocus.AzureExtensions.HostedService.Net;
+    using StealFocus.AzureExtensions.Net;
     using StealFocus.AzureExtensions.Security.Cryptography;
 
     public class Subscription : ISubscription
