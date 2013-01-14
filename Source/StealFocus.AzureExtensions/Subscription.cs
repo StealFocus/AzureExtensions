@@ -16,21 +16,21 @@
 
     public class Subscription : ISubscription
     {
-        private readonly Guid subscriptionId;
-
-        private readonly string certificateThumbprint;
-
         /// <param name="subscriptionId">The Subscription ID.</param>
         /// <param name="certificateThumbprint">The certificate thumbprint.</param>
         public Subscription(Guid subscriptionId, string certificateThumbprint)
         {
-            this.subscriptionId = subscriptionId;
-            this.certificateThumbprint = certificateThumbprint;
+            this.SubscriptionId = subscriptionId;
+            this.CertificateThumbprint = certificateThumbprint;
         }
+
+        public Guid SubscriptionId { get; private set; }
+
+        public string CertificateThumbprint { get; private set; }
 
         public string[] ListHostedServices()
         {
-            HttpWebRequest httpWebRequest = GetRequestForListHostedServices(this.subscriptionId, this.certificateThumbprint);
+            HttpWebRequest httpWebRequest = GetRequestForListHostedServices(this.SubscriptionId, this.CertificateThumbprint);
             HttpWebResponse httpWebResponse = null;
             try
             {
@@ -53,7 +53,7 @@
             }
             catch (WebException e)
             {
-                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "There was a problem getting the list of Hosted Services for Subscription ID '{0}'.", this.subscriptionId);
+                string exceptionMessage = string.Format(CultureInfo.CurrentCulture, "There was a problem getting the list of Hosted Services for Subscription ID '{0}'.", this.SubscriptionId);
                 throw new AzureExtensionsException(exceptionMessage, e);
             }
             finally
