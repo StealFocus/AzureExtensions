@@ -66,5 +66,12 @@
         /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
         /// <param name="roleName">The name of the role.</param>
         string GetInstanceSize(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, string roleName);
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="roleName">The name of the role.</param>
+        int GetInstanceCount(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, string roleName);
     }
 }

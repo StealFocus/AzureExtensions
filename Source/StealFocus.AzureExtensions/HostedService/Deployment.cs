@@ -345,6 +345,18 @@
             return deploymentXmlParser.GetInstanceSize(roleName);
         }
 
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="roleName">The name of the role.</param>
+        public int GetInstanceCount(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, string roleName)
+        {
+            XDocument deploymentXml = this.GetInformation(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+            IDeploymentXmlParser deploymentXmlParser = new DeploymentXmlParser(deploymentXml);
+            return deploymentXmlParser.GetInstanceCount(roleName);
+        }
+
         private static XDocument Get(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
         {
             HttpWebRequest httpWebRequest = GetRequestForGet(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);

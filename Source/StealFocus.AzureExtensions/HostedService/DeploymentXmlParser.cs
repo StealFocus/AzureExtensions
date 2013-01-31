@@ -17,6 +17,31 @@
 
         public string GetInstanceSize(string roleName)
         {
+            XElement roleInstanceListElement = this.GetRoleInstanceListElement();
+            XNamespace wans = XmlNamespace.MicrosoftWindowsAzure;
+            string instanceSize = (from roleInstanceElement
+                                        in roleInstanceListElement.Elements(wans + "RoleInstance")
+                                   where roleInstanceElement.Elements(wans + "RoleName").FirstOrDefault().Value == roleName
+                                   select roleInstanceElement)
+                                   .Single()
+                                   .Element(wans + "InstanceSize").Value;
+            return instanceSize;
+        }
+
+        public int GetInstanceCount(string roleName)
+        {
+            XElement roleInstanceListElement = this.GetRoleInstanceListElement();
+            XNamespace wans = XmlNamespace.MicrosoftWindowsAzure;
+            int instanceCount = (from roleInstanceElement
+                                     in roleInstanceListElement.Elements(wans + "RoleInstance")
+                                 where roleInstanceElement.Elements(wans + "RoleName").FirstOrDefault().Value == roleName
+                                 select roleInstanceElement)
+                                 .Count();
+            return instanceCount;
+        }
+
+        private XElement GetRoleInstanceListElement()
+        {
             XNamespace wans = XmlNamespace.MicrosoftWindowsAzure;
             XElement deploymentElement = this.deploymentXml.Root;
             if (deploymentElement == null)
@@ -32,13 +57,7 @@
                 throw new AzureExtensionsException(exceptionMessage);
             }
 
-            string instanceSize = (from roleInstanceElement
-                                        in roleInstanceListElement.Elements(wans + "RoleInstance")
-                                        where roleInstanceElement.Elements(wans + "RoleName").FirstOrDefault().Value == roleName
-                                        select roleInstanceElement)
-                                        .Single()
-                                        .Element(wans + "InstanceSize").Value;
-            return instanceSize;
+            return roleInstanceListElement;
         }
     }
 }

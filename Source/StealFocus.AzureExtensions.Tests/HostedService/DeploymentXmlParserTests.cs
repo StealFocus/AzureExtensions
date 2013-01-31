@@ -49,12 +49,21 @@
             "</Deployment>";
 
         [TestMethod]
-        public void UnitTest()
+        public void UnitTestGetInstanceSize()
         {
             XDocument deploymentXml = XDocument.Parse(DeploymentXml);
             IDeploymentXmlParser deploymentXmlParser = new DeploymentXmlParser(deploymentXml);
             string instanceSize = deploymentXmlParser.GetInstanceSize("[roleName]");
             Assert.AreEqual("ExtraSmall", instanceSize);
+        }
+
+        [TestMethod]
+        public void UnitTestGetInstanceCount()
+        {
+            XDocument deploymentXml = XDocument.Parse(DeploymentXml);
+            IDeploymentXmlParser deploymentXmlParser = new DeploymentXmlParser(deploymentXml);
+            int instanceCount = deploymentXmlParser.GetInstanceCount("[roleName]");
+            Assert.AreEqual(1, instanceCount);
         }
     }
 }
