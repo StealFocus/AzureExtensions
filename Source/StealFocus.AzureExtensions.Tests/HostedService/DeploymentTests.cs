@@ -56,6 +56,31 @@
         }
 
         [TestMethod]
+        public void TestGetInformation()
+        {
+            IDeployment deployment = new Deployment();
+            XDocument informationXml = deployment.GetInformation(
+                WindowsAzureAccount.SubscriptionId,
+                WindowsAzureAccount.CertificateThumbprint,
+                "beazleyrisksweb-weuro-sys",
+                DeploymentSlot.Production);
+            Assert.IsNotNull(informationXml);
+        }
+
+        [TestMethod]
+        public void TestGetInstanceSize()
+        {
+            IDeployment deployment = new Deployment();
+            string instanceSize = deployment.GetInstanceSize(
+                WindowsAzureAccount.SubscriptionId,
+                WindowsAzureAccount.CertificateThumbprint,
+                "beazleyrisksweb-weuro-sys",
+                DeploymentSlot.Production,
+                "Beazley.Risks.Web.Services");
+            Assert.AreEqual("ExtraSmall", instanceSize);
+        }
+
+        [TestMethod]
         public void TestGetConfigurationAndChangeConfiguration()
         {
             IDeployment deployment = new Deployment();

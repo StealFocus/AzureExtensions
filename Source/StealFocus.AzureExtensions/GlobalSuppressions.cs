@@ -22,3 +22,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "EnumerationResults", Scope = "member", Target = "StealFocus.AzureExtensions.StorageService.BlobService.#ListBlobs(System.String)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "StealFocus.AzureExtensions.Security.Cryptography")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces", Scope = "type", Target = "StealFocus.AzureExtensions.HostedService.Deployment")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "RoleInstanceList", Scope = "member", Target = "StealFocus.AzureExtensions.HostedService.DeploymentXmlParser.#GetInstanceSize(System.String)")]

@@ -59,8 +59,10 @@
     <Compile Include="HostedService\Deployment.cs" />
     <Compile Include="HostedService\Configuration\DeploymentSlot.cs" />
     <Compile Include="GuidExtensions.cs" />
+    <Compile Include="HostedService\DeploymentXmlParser.cs" />
     <Compile Include="HostedService\HorizontalScale.cs" />
     <Compile Include="HostedService\IDeployment.cs" />
+    <Compile Include="HostedService\IDeploymentXmlParser.cs" />
     <Compile Include="HostedService\IOperation.cs" />
     <Compile Include="Net\WebRequestExtensions.cs" />
     <Compile Include="Net\WebResponseExtensions.cs" />

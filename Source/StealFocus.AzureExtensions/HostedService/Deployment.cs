@@ -161,6 +161,73 @@
             return requestId;
         }
 
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <returns>
+        /// The following XML:
+        /// <![CDATA[
+        /// <?xml version="1.0" encoding="utf-8"?>
+        /// <Deployment 
+        ///   xmlns="http://schemas.microsoft.com/windowsazure" 
+        ///   xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        ///   <Name>[GUID]</Name>
+        ///   <DeploymentSlot>Production</DeploymentSlot>
+        ///   <PrivateID>21d9affd19e540398323bc1106f5d708</PrivateID>
+        ///   <Status>Running</Status>
+        ///   <Label>[Base64EncodedString]</Label>
+        ///   <Url>http://[serviceName].cloudapp.net/</Url>
+        ///   <Configuration>[Base64EncodedString]</Configuration>
+        ///   <RoleInstanceList>
+        ///     <RoleInstance>
+        ///       <RoleName>[roleName]</RoleName>
+        ///       <InstanceName>[roleName]_IN_0</InstanceName>
+        ///       <InstanceStatus>ReadyRole</InstanceStatus>
+        ///       <InstanceUpgradeDomain>0</InstanceUpgradeDomain>
+        ///       <InstanceFaultDomain>0</InstanceFaultDomain>
+        ///       <InstanceSize>ExtraSmall</InstanceSize>
+        ///       <InstanceStateDetails />
+        ///     </RoleInstance>
+        ///     <RoleInstance>
+        ///       ...
+        ///     </RoleInstance>
+        ///   </RoleInstanceList>
+        ///   <UpgradeDomainCount>1</UpgradeDomainCount>
+        ///   <RoleList>
+        ///     <Role>
+        ///       <RoleName>[roleName]</RoleName>
+        ///       <OsVersion>WA-GUEST-OS-1.21_201210-01</OsVersion>
+        ///     </Role>
+        ///     <Role>
+        ///       ...
+        ///     </Role>
+        ///   </RoleList>
+        ///   <SdkVersion>1.7.30602.1703</SdkVersion>
+        ///   <InputEndpointList>
+        ///     <InputEndpoint>
+        ///       <RoleName>[roleName]</RoleName>
+        ///       <Vip>[ipAddress]</Vip>
+        ///       <Port>8080</Port>
+        ///     </InputEndpoint>
+        ///     <InputEndpoint>
+        ///       ...
+        ///     </InputEndpoint>
+        ///   </InputEndpointList>
+        ///   <Locked>false</Locked>
+        ///   <RollbackAllowed>false</RollbackAllowed>
+        /// </Deployment>
+        /// ]]>
+        /// </returns>
+        public XDocument GetInformation(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
+        {
+            return Get(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+        }
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
         public XDocument GetConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
         {
             XDocument deploymentXml = Get(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
@@ -183,6 +250,13 @@
             return XDocument.Parse(decodedConfigurationXml);
         }
 
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="configuration">The XML representing the new configuration i.e. the contents of a <![CDATA[.cscfg]]> file.</param>
+        /// <param name="treatWarningsAsError">A <see cref="bool"/>.</param>
+        /// <param name="mode">Either "Auto" or "Manual".</param>
         public string ChangeConfiguration(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, XDocument configuration, bool treatWarningsAsError, string mode)
         {
             HttpWebRequest httpWebRequest = GetRequestForChangeConfiguration(subscriptionId, certificateThumbprint, serviceName, deploymentSlot, configuration, treatWarningsAsError, mode);
@@ -257,6 +331,18 @@
             }
 
             return null;
+        }
+
+        /// <param name="subscriptionId">The Subscription ID.</param>
+        /// <param name="certificateThumbprint">The certificate thumbprint.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="deploymentSlot">Either "Production" or "Staging".</param>
+        /// <param name="roleName">The name of the role.</param>
+        public string GetInstanceSize(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot, string roleName)
+        {
+            XDocument deploymentXml = this.GetInformation(subscriptionId, certificateThumbprint, serviceName, deploymentSlot);
+            IDeploymentXmlParser deploymentXmlParser = new DeploymentXmlParser(deploymentXml);
+            return deploymentXmlParser.GetInstanceSize(roleName);
         }
 
         private static XDocument Get(Guid subscriptionId, string certificateThumbprint, string serviceName, string deploymentSlot)
